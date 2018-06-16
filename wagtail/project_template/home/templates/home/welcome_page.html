@@ -1,6 +1,6 @@
 {% templatetag openblock %} extends "base.html" {% templatetag closeblock %}
 
-{% templatetag openblock %} load i18n wagtailcore_tags {% templatetag closeblock %}
+{% templatetag openblock %} load i18n {% templatetag closeblock %}
 
 {% templatetag openblock %} block body_class {% templatetag closeblock %}template-homepage{% templatetag openblock %} endblock {% templatetag closeblock %}
 
@@ -290,7 +290,7 @@
       </div class="logo">
     </div class="column">
     <div class="column">
-      {% templatetag openblock %} trans "View the" {% templatetag closeblock %} <a href="http://docs.wagtail.io/en/v{% templatetag openblock %} wagtail_version {% templatetag closeblock %}/releases/{% templatetag openblock %} wagtail_version {% templatetag closeblock %}.html" target="_blank" rel="noopener">{% templatetag openblock %} trans "release notes" {% templatetag closeblock %}</a> {% templatetag openblock %} trans "for Wagtail" {% templatetag closeblock %} {% templatetag openblock %} wagtail_version {% templatetag closeblock %}
+      {% templatetag openblock %} blocktrans {% templatetag closeblock %}View the <a href="http://docs.wagtail.io/en/latest/releases/" target="_blank" rel="noopener">latest release notes </a>{% templatetag openblock %} endblocktrans {% templatetag closeblock %}
     </div class="column">
   </div class="row">
 </header>
