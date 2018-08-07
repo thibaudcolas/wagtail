@@ -220,9 +220,9 @@
   <div class="row">
     <div class="column">
       <div class="logo">
-        <a href="https://wagtail.io/" target="_blank" rel="noopener">
+        <a href="https://wagtail.io/" target="_blank" rel="nofollower noopener">
           <svg class="figure-logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 342.5 126.2">
-            <title>Wagtail Logo</title>
+            <title>Visit the Wagtail website</title>
             <g>
               <g>
                 <g>
@@ -287,14 +287,13 @@
       </div class="logo">
     </div class="column">
     <div class="column">
-      {% templatetag openblock %} blocktrans {% templatetag closeblock %}View the <a href="http://docs.wagtail.io/en/latest/releases/" target="_blank" rel="noopener">release notes </a>{% templatetag openblock %} endblocktrans {% templatetag closeblock %}
+      {% templatetag openblock %} blocktrans {% templatetag closeblock %}View the <a href="https://docs.wagtail.io/en/latest/releases/" target="_blank" rel="nofollower noopener">release notes </a>{% templatetag openblock %} endblocktrans {% templatetag closeblock %}
     </div class="column">
   </div class="row">
 </header>
-<main>
+<div role="main">
   <div class="figure">
-    <svg class="figure-space" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 132" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <title>Wagtail in UFO logo</title>
+    <svg class="figure-space" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 132" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
       <defs>
         <path id="a" d="M89.58 26.597C81.876 11.063 65.8.375 47.213.375S12.552 11.063 4.85 26.597C1.746 32.857 0 39.902 0 47.354c0 6.875 1.484 13.404 4.15 19.288 12.926 1.555 27.562 2.432 43.064 2.432 15.503 0 30.138-.877 43.064-2.432 2.667-5.884 4.152-12.413 4.152-19.288 0-7.452-1.747-14.497-4.85-20.757"/>
       </defs>
@@ -333,10 +332,10 @@
   </div>
   <br>
   <h2>{% templatetag openblock %} trans "Welcome to your new Wagtail site!" {% templatetag closeblock %}</h2>
-  <p>{% templatetag openblock %} trans 'Please feel free to <a href="https://wagtail.io/slack/" target="_blank">join our community on Slack</a>, or get started with one of the links below.' {% templatetag closeblock %}</p>
-</main>
+  <p>{% templatetag openblock %} trans 'Please feel free to <a href="https://github.com/wagtail/wagtail/wiki/Slack" target="_blank">join our community on Slack</a>, or get started with one of the links below.' {% templatetag closeblock %}</p>
+</div>
 <footer class="u-clearfix">
-  <a href="http://docs.wagtail.io/" target="_blank" rel="noopener">
+  <a href="https://docs.wagtail.io/" target="_blank" rel="nofollower noopener">
     <div class="option one">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs>
@@ -353,7 +352,7 @@
       </div>
     </div>
   </a>
-  <a href="http://docs.wagtail.io/en/latest/getting_started/tutorial.html" target="_blank" rel="noopener">
+  <a href="https://docs.wagtail.io/en/latest/getting_started/tutorial.html" target="_blank" rel="nofollower noopener">
     <div class="option two">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M0 0h24v24H0V0z" fill="none"></path>
@@ -365,7 +364,7 @@
       </div>
     </div>
   </a>
-  <a href="{% templatetag openblock %} url 'wagtailadmin_home' {% templatetag closeblock %}" target="_blank" rel="noopener">
+  <a href="{% templatetag openblock %} url 'wagtailadmin_home' {% templatetag closeblock %}" target="_blank" rel="nofollower noopener">
     <div class="option three">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M0 0h24v24H0z" fill="none"></path>
