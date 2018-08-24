@@ -23,7 +23,7 @@
 }
 
 .logo {
-    display: block;
+    display: flex;
     text-align: left;
     text-decoration: none;
     color: #aaa;
@@ -32,6 +32,11 @@
     -webkit-font-smoothing: auto;
     width: 100%;
     box-sizing: border-box;
+    align-items: center;
+}
+
+.logo > * {
+    margin: 0 auto;
 }
 
 // Desktop styling (override mobile styling):
@@ -114,4 +119,8 @@
             }
         }
     }
+}
+
+.to-dashboard {
+    padding-left: 10px;
 }
