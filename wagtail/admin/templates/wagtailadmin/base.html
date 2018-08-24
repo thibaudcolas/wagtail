@@ -4,7 +4,7 @@
 {% block furniture %}
     <div class="nav-wrapper">
         <div class="inner">
-            <a href="{% url 'wagtailadmin_home' %}" class="logo" title="Wagtail v.{% wagtail_version %}">
+            <a href="{% url 'wagtailadmin_home' %}" class="logo" title="{% trans "Dashboard" %}">
                 {% block branding_logo %}
                     {# Mobile-only logo: #}
                     <div class="wagtail-logo-container__mobile u-hidden@medium">
@@ -14,7 +14,7 @@
                     {# Desktop logo (animated): #}
                     {% include "wagtailadmin/shared/animated_logo.html" %}
                 {% endblock %}
-                <span class="u-hidden@medium">{% trans "Dashboard" %}</span>
+                <span class="u-hidden@medium to-dashboard">{% trans "Dashboard" %}</span>
             </a>
 
             {% menu_search %}
