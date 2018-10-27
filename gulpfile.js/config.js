@@ -33,6 +33,7 @@ var apps = [
     new App('wagtail/contrib/styleguide', {'appName': 'wagtailstyleguide'}),
     new App('wagtail/contrib/settings', {'appName': 'wagtailsettings'}),
     new App('wagtail/contrib/modeladmin', {'appName': 'wagtailmodeladmin'}),
+    new App('wagtail/project_template/home', {'appName': 'welcome_page'}),
 ];
 
 module.exports = {
