@@ -4,6 +4,7 @@ var sass = require('gulp-dart-sass');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
 var cssnano = require('cssnano');
+var postcssCustomProperties = require('postcss-custom-properties');
 var sourcemaps = require('gulp-sourcemaps');
 var size = require('gulp-size');
 var config = require('../config');
@@ -69,6 +70,7 @@ gulp.task('styles:sass', function () {
         .pipe(postcss([
           cssnano(cssnanoConfig),
           autoprefixer(autoprefixerConfig),
+          postcssCustomProperties(),
         ]))
         .pipe(size({ title: 'Wagtail CSS' }))
         .pipe(config.isProduction ? gutil.noop() : sourcemaps.write())
