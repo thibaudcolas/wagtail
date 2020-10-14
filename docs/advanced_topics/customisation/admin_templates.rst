@@ -102,7 +102,7 @@ To customize the primary color used in the admin UI, inject a css file using the
         --color-primary-hue: 25;
     }
 
-``color-primary`` is an `hsl color <https://en.wikipedia.org/wiki/HSL_and_HSV>`_ composed of 3 css variables - ``--color-primary-hue`` (a unitless number), ``--color-primary-saturation`` (a percentage), and ``--color-primary-lightness`` (also a percentage). Separating the color into 3 allows us to calculate variations on the color to use alongside the primary color. If needed, you can also control those variations manually by setting ``hue``, ``saturation``, and ``lightness`` variables for the following colors: ``color-primary-darker``, ``color-primary-dark``, ``color-input-focus``, and ``color-input-focus-border``.
+``color-primary`` is an `hsl color <https://en.wikipedia.org/wiki/HSL_and_HSV>`_ composed of 3 css variables - ``--color-primary-hue`` (a unitless number), ``--color-primary-saturation`` (a percentage), and ``--color-primary-lightness`` (also a percentage). Separating the color into 3 allows us to calculate variations on the color to use alongside the primary color. If needed, you can also control those variations manually by setting ``hue``, ``saturation``, and ``lightness`` variables for the following colors: ``color-primary-darker``, ``color-primary-dark``, ``color-primary-darkest``, ``color-input-focus``, and ``color-input-focus-border``.
 
 Warnings
 --------
