@@ -94,7 +94,7 @@ To replace the welcome message on the dashboard, create a template file ``dashbo
 Custom branding colors
 ======================
 
-To customize the primary color used in the admin UI, inject a css file using `the insert_global_admin_css hook <https://docs.wagtail.io/en/v2.10.2/reference/hooks.html#insert-global-admin-css>`_ and override the variables within the ``:root`` selector:
+To customize the primary color used in the admin UI, inject a css file using the hook :ref:`insert_global_admin_css` and override the variables within the ``:root`` selector:
 
 .. code-block:: css
 
