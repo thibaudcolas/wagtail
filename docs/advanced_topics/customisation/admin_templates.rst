@@ -92,7 +92,7 @@ To replace the welcome message on the dashboard, create a template file ``dashbo
     {% block branding_welcome %}Welcome to Frank's Site{% endblock %}
 
 Custom user interface colors
-======================
+============================
 
 To customize the primary color used in the admin user interface, inject a CSS file using the hook :ref:`insert_global_admin_css` and override the variables within the ``:root`` selector:
 
