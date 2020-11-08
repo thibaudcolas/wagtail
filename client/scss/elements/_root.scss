@@ -5,5 +5,5 @@
     @include define-color('color-primary-darkest', css-darken(get-color('color-primary-darker'), 9%));
 
     @include define-color('color-input-focus', css-lighten(css-desaturate(get-color('color-primary'), 40%), 72%));
-    @include define-color('color-input-focus-border', css-lighten(css-desaturate(get-color('color-primary'), 12%), 10%));
+    @include define-color('color-input-focus-border', css-lighten(css-saturate(get-color('color-primary'), 12%), 10%));
 }
