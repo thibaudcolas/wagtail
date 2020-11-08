@@ -108,7 +108,7 @@ To customize the primary color used in the admin user interface, inject a CSS fi
         --color-primary-hue: 25;
     }
 
-``color-primary`` is an `hsl color <https://en.wikipedia.org/wiki/HSL_and_HSV>`_ composed of 3 CSS variables - ``--color-primary-hue`` (0-360 with no unit), ``--color-primary-saturation`` (a percentage), and ``--color-primary-lightness`` (also a percentage). Separating the color into 3 allows us to calculate variations on the color to use alongside the primary color. If needed, you can also control those variations manually by setting ``hue``, ``saturation``, and ``lightness`` variables for the following colors: ``color-primary-darker``, ``color-primary-dark``, ``color-primary-darkest``, ``color-input-focus``, and ``color-input-focus-border``:
+``color-primary`` is an `hsl color <https://en.wikipedia.org/wiki/HSL_and_HSV>`_ composed of 3 CSS variables - ``--color-primary-hue`` (0-360 with no unit), ``--color-primary-saturation`` (a percentage), and ``--color-primary-lightness`` (also a percentage). Separating the color into 3 allows us to calculate variations on the color to use alongside the primary color. If needed, you can also control those variations manually by setting ``hue``, ``saturation``, and ``lightness`` variables for the following colors: ``color-primary-darker``, ``color-primary-dark``, ``color-input-focus``, and ``color-input-focus-border``:
 
 .. code-block:: css
 
@@ -122,9 +122,6 @@ To customize the primary color used in the admin user interface, inject a CSS fi
         --color-primary-dark-hue: 23;
         --color-primary-dark-saturation: 100%;
         --color-primary-dark-lightness: 15%;
-        --color-primary-darkest-hue: 22;
-        --color-primary-darkest-saturation: 100%;
-        --color-primary-darkest-lightness: 10%;
     }
 
 If instead you intend to set all 6 available colors, you can use any valid css colors:
