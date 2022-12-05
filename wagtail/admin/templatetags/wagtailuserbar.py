@@ -49,8 +49,10 @@ def wagtailuserbar(context, position="bottom-right"):
         return ""
 
     # Don't render if page is loaded in page editor's preview panel iframe
-    if getattr(request, "in_preview_panel", False):
-        return ""
+    # TODO Temporarily allow userbar to show inside the preview panel.
+    # TODO In the future, we will instead want to hide the userbar but still show Sa11y.
+    # if getattr(request, "in_preview_panel", False):
+    #     return ""
 
     # Render the userbar using the user's preferred admin language
     userprofile = UserProfile.get_for_user(user)

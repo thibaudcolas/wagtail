@@ -1,3 +1,13 @@
+import { Sa11y, Lang, LangEn, Sa11yCustomChecks } from 'sa11y';
+
+// Demo Pa11y integration based on official docs.
+Lang.addI18n(LangEn.strings);
+const sa11y = new Sa11y({
+  customChecks: new Sa11yCustomChecks(),
+  checkRoot: 'body',
+  readabilityRoot: 'main',
+});
+
 // This entrypoint is not bundled with any polyfills to keep it as light as possible
 // Please stick to old JS APIs and avoid importing anything that might require a vendored module
 // More background can be found in webpack.config.js
