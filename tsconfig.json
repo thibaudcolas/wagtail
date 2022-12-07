@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
     "jsx": "react",
-    "lib": ["es2015", "dom"],
+    "target": "es2021", // Since lowest browser support is for Safari 14
+    "lib": ["dom", "dom.iterable"],
     "noImplicitAny": false, // TODO: Enable once all existing code is typed
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strictNullChecks": true,
+    "strictPropertyInitialization": true,
     "esModuleInterop": true,
     "allowJs": true,
     "downlevelIteration": true
