@@ -7,7 +7,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strictNullChecks": true,
-    "strictPropertyInitialization": true,
+    "strictPropertyInitialization": true, //This option requires `--strictNullChecks` be enabled in order to take effect
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "allowJs": true,
