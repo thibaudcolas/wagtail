@@ -10,6 +10,7 @@
     "strictPropertyInitialization": true, //This option requires `--strictNullChecks` be enabled in order to take effect
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "allowJs": true,
     "downlevelIteration": true
   },
