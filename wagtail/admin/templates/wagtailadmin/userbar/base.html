@@ -1,6 +1,6 @@
 {% load wagtailadmin_tags i18n %}
 <!-- Wagtail user bar embed code -->
-<div class="wagtail-userbar-reset">
+<template id="wagtail-userbar-template" class="wagtail-userbar-reset">
     <div class="wagtail-userbar wagtail-userbar--{{ position|default:'bottom-right' }}" data-wagtail-userbar>
         <link rel="stylesheet" href="{% versioned_static 'wagtailadmin/css/userbar.css' %}">
         <div class="wagtail-userbar-nav">
@@ -31,7 +31,11 @@
                 {% endfor %}
             </ul>
         </div>
-        <script src="{% versioned_static 'wagtailadmin/js/userbar.js' %}"></script>
     </div>
-</div>
+</template>
+<template id="wagtail-annotation-template">
+    <link rel="stylesheet" href="{% versioned_static 'wagtailadmin/css/userbar.css' %}">
+</template>
+<wagtail-userbar>Test</wagtail-userbar>
+<script src="{% versioned_static 'wagtailadmin/js/userbar.js' %}"></script>
 <!-- end Wagtail user bar embed code -->

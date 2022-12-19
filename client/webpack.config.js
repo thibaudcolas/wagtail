@@ -285,7 +285,11 @@ module.exports = function exports(env, argv) {
         cacheGroups: {
           vendor: {
             name: getOutputPath('admin', 'js', 'vendor'),
-            chunks: 'initial',
+            chunks(chunk) {
+              // exclude `my-excluded-chunk`
+              console.log(chunk.name);
+              return chunk.name !== 'userbar';
+            },
             minChunks: 2,
             reuseExistingChunk: true,
           },
