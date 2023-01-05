@@ -129,6 +129,45 @@ function initPreview() {
       // Make the new iframe visible
       newIframe.style = null;
 
+      const countSentences = (text) =>
+        text ? (text.match(/[.?!…]+./g) || []).length + 1 : 0;
+
+      const countWords = (text) =>
+        text
+          ? (text.replace(/['";:,.?¿\-!¡]+/g, '').match(/\S+/g) || []).length
+          : 0;
+
+      const countChars = (text) => {
+        if (text) {
+          // Find as many matches as there are (g), matching newlines as characters (s), as unicode code points (u).
+          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#advanced_searching_with_flags.
+          const matches = text.match(/./gsu);
+          return matches ? matches.length : 0;
+        }
+
+        return 0;
+      };
+
+      const characterWeight = 4.71;
+      const sentenceWeight = 0.5;
+      const base = 21.43;
+      function automatedReadability(text) {
+        const words = countWords(text);
+        const chars = countChars(text);
+        const sentences = countSentences(text);
+        return (
+          characterWeight * (chars / words) +
+          sentenceWeight * (words / sentences) -
+          base
+        );
+      }
+
+      console.log(
+        automatedReadability(
+          iframe.contentWindow.document.querySelector('main').innerText,
+        ),
+      );
+
       // Ready for another update
       finishUpdate();
 
