@@ -302,8 +302,9 @@ export class Userbar extends HTMLElement {
     try {
       return JSON.parse(script.textContent);
     } catch (err) {
-      // eslint-disable no-console
+      // eslint-disable-next-line no-console
       console.error('Error loading Axe config');
+      // eslint-disable-next-line no-console
       console.error(err);
     }
 
