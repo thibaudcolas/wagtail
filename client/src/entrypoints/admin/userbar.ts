@@ -1,6 +1,52 @@
 import axe, { AxeResults } from 'axe-core';
 
-import { dialog } from './dialog';
+import { dialog } from '../../includes/dialog';
+
+export const sortAxeViolations = (violations: AxeResults['violations']) => {
+  const inaccessibleNodes: { node: HTMLElement; selectorName: string }[] = [];
+
+  violations.forEach((violation) => {
+    violation.nodes.forEach((node) => {
+      const selectorName = node.target[0];
+      // push both node (to compare DOM position) and selector (to find in axe results)
+      inaccessibleNodes.push({
+        node: document.querySelector(selectorName) as HTMLElement,
+        selectorName,
+      });
+    });
+  });
+
+  // Sort nodes based on their position in DOM. if a contains b, parent (a) goes first
+  const sortedNodes = inaccessibleNodes.sort((a, b) =>
+    // method works with bitwise https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
+    // eslint-disable-next-line no-bitwise
+    a.node.compareDocumentPosition(b.node) & Node.DOCUMENT_POSITION_PRECEDING
+      ? 1
+      : -1,
+  );
+
+  console.log(sortedNodes.map((a) => a.selectorName));
+
+  // Utility object with index in order not to use find each time
+  const selectorIndex = {};
+  sortedNodes.forEach((sortedNode, index) => {
+    selectorIndex[sortedNode.selectorName] = index;
+  });
+
+  // Only need 1 min index per violation
+  const getMinIndex = (violationToSort) =>
+    Math.min(
+      ...violationToSort.nodes.map(
+        (sortedNode) => selectorIndex[sortedNode.target[0]],
+      ),
+    );
+
+  const sortedViolations = violations.sort(
+    (a, b) => getMinIndex(a) - getMinIndex(b),
+  );
+  console.log(violations);
+  return sortedViolations;
+};
 
 /*
 This entrypoint is not bundled with any polyfills to keep it as light as possible
