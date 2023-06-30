@@ -705,100 +705,131 @@ This method is now available from our templates. Update `blog_index_page.html` t
 
 (tutorial_categories)=
 
-### Categories
+### Authors
 
-Let's add a category system to our blog. Unlike tags, where a page author can bring a tag into existence simply by using it on a page, our categories will be a fixed list, managed by the site owner through a separate area of the admin interface.
+You probably want your blog to have authors, which is an essential feature of blogs. The way to go about this is to have a fixed list, managed by the site owner through a separate area of the [Admin interface](https://guide.wagtail.org/en-latest/concepts/wagtail-interfaces/#admin-interface).
 
-First, we define a `BlogCategory` model. A category is not a page in its own right, and so we define it as a standard Django `models.Model` rather than inheriting from `Page`. Wagtail introduces the concept of "snippets" for reusable pieces of content that need to be managed through the admin interface, but do not exist as part of the page tree themselves; a model can be registered as a snippet by adding the `@register_snippet` decorator. All the field types we've used so far on pages can be used on snippets too - here we'll give each category an icon image as well as a name. Add to `blog/models.py`:
+First, define an `Author` model. This model isn't a page in its own right. You have to define it as a standard Django `models.Model` rather than inheriting from `Page`. Wagtail introduces the concept of **Snippets** for reusable pieces of content, but they don't exist as part of the page tree themselves. You can manage **Snippets** through the [Admin interface](https://guide.wagtail.org/en-latest/concepts/wagtail-interfaces/#admin-interface). You can register a model as a **Snippet** by adding the `@register_snippet` decorator. Also, you can use all the fields types that you've used so far on pages on snippets too. 
 
-```python
-# Add this to the top of your blog/models.py file
-from wagtail.snippets.models import register_snippet
+To create Authors and give each author an author image as well as a name, add the following to `blog/models.py`:
 
-# ... Keep BlogIndexPage, BlogPage, BlogPageGalleryImage, and then add the BlogCategory category:
+```{eval-rst}
+.. code-block:: python
+    :emphasize-lines: 1,5-22
 
-@register_snippet
-class BlogCategory(models.Model):
-    name = models.CharField(max_length=255)
-    icon = models.ForeignKey(
-        'wagtailimages.Image', null=True, blank=True,
-        on_delete=models.SET_NULL, related_name='+'
-    )
-
-    panels = [
-        FieldPanel('name'),
-        FieldPanel('icon'),
-    ]
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = 'blog categories'
+    from wagtail.snippets.models import register_snippet
+    
+    # ... Keep BlogIndexPage, BlogPage, BlogPageGalleryImage models, and then add the Author model:
+    
+    @register_snippet
+    class Author(models.Model):
+        name = models.CharField(max_length=255)
+        author_image = models.ForeignKey(
+            'wagtailimages.Image', null=True, blank=True,
+            on_delete=models.SET_NULL, related_name='+'
+        )
+    
+        panels = [
+            FieldPanel('name'),
+            FieldPanel('author_image'),
+        ]
+    
+        def __str__(self):
+            return self.name
+    
+        class Meta:
+            verbose_name_plural = 'Authors'
 ```
 
 ```{note}
-Note that we are using `panels` rather than `content_panels` here - since snippets generally have no need for fields such as slug or publish date, the editing interface for them is not split into separate 'content' / 'promote' / 'settings' tabs as standard, and so there is no need to distinguish between 'content panels' and 'promote panels'.
+Note that you are using `panels` rather than `content_panels` here. Since snippets generally have no need for fields such as slug or publish date, the editing interface for them is not split into separate 'content' / 'promote' / 'settings' tabs. So there is no need to distinguish between 'content panels' and 'promote panels'.
 ```
 
-Migrate this change by running `python manage.py makemigrations` and `python manage.py migrate`. Create a few categories through the Snippets area which now appears in the admin menu.
+Migrate this change by running `python manage.py makemigrations` and `python manage.py migrate`. Create a few categories through the **Snippets** area which now appears in your Wagtail [Admin interface](https://guide.wagtail.org/en-latest/concepts/wagtail-interfaces/#admin-interface).
 
-We can now add categories to the `BlogPage` model, as a many-to-many field. The field type we use for this is `ParentalManyToManyField` - this is a variant of the standard Django `ManyToManyField` which ensures that the chosen objects are correctly stored against the page record in the revision history, in much the same way that `ParentalKey` replaces `ForeignKey` for one-to-many relations.To add categories to the `BlogPage`, modify `models.py` in your blog app folder:
+You can now add authors to the `BlogPage` model, as a `many-to-many` field. The field type to use for this is `ParentalManyToManyField`. This field is a variation of the standard Django `ManyToManyField` that ensures the selected objects are properly associated with the page record in the revision history. It operates in a similar manner to how `ParentalKey` replaces `ForeignKey` for `one-to-many` relations. To add authors to the `BlogPage`, modify `models.py` in your blog app folder:
 
-```python
-# New imports added for forms and ParentalManyToManyField, and MultiFieldPanel
-from django import forms
-from django.db import models
+```{eval-rst}
+.. code-block:: python
+    :emphasize-lines: 3,6,9,18,22-30
 
-from modelcluster.fields import ParentalKey, ParentalManyToManyField
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
+    # New imports added for forms and ParentalManyToManyField, and MultiFieldPanel
 
-# ... modify your BlogPage model
+    from django import forms
+    from django.db import models
+    
+    from modelcluster.fields import ParentalKey, ParentalManyToManyField
+    from wagtail.models import Page, Orderable
+    from wagtail.fields import RichTextField
+    from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
+    from wagtail.search import index
+    from wagtail.snippets.models import register_snippet
 
-class BlogPage(Page):
-    date = models.DateField("Post date")
-    intro = models.CharField(max_length=250)
-    body = RichTextField(blank=True)
-    # Add this:
-    categories = ParentalManyToManyField('blog.BlogCategory', blank=True)
-
-    # ... Keep the main_image method and search_fields definition. Modify your content_panels:
-
-    content_panels = Page.content_panels + [
-        MultiFieldPanel([
-            FieldPanel('date'),
-            FieldPanel('categories', widget=forms.CheckboxSelectMultiple),
-        ], heading="Blog information"),
-        FieldPanel('intro'),
-        FieldPanel('body'),
-        InlinePanel('gallery_images', label="Gallery images"),
-    ]
+    
+    class BlogPage(Page):
+        date = models.DateField("Post date")
+        intro = models.CharField(max_length=250)
+        body = RichTextField(blank=True)
+        authors = ParentalManyToManyField('blog.Author', blank=True)
+    
+        # ... Keep the main_image method and search_fields definition. Modify your     content_panels:
+    
+        content_panels = Page.content_panels + [
+            MultiFieldPanel([
+                FieldPanel('date'),
+                FieldPanel('authors', widget=forms.CheckboxSelectMultiple),
+            ], heading="Blog information"),
+            FieldPanel('intro'),
+            FieldPanel('body'),
+            InlinePanel('gallery_images', label="Gallery images"),
+        ]
 ```
 
-Here we're making use of the `widget` keyword argument on the `FieldPanel` definition to specify a checkbox-based widget instead of the default multiple select box, as this is often considered more user-friendly.
+In the preceding model modification, you used the `widget` keyword argument on the `FieldPanel` definition to specify a checkbox-based widget instead of the default multiple select boxes. Using the `widget` keyword argument makes your model more user-friendly. Also, you used a `MultiFieldPanel` in `content_panels` to group the `date` and `Authors` fields together for readability.
 
-Finally, update the `blog_page.html` template to display the categories:
+Finally, update the `blog_page.html` template to display the Authors:
 
-```html+django
-<h1>{{ page.title }}</h1>
-<p class="meta">{{ page.date }}</p>
-
-{% with categories=page.categories.all %}
-    {% if categories %}
-        <h3>Posted in:</h3>
-        <ul>
-            {% for category in categories %}
-                <li style="display: inline">
-                    {% image category.icon fill-32x32 style="vertical-align: middle" %}
-                    {{ category.name }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-{% endwith %}
+```{eval-rst}
+.. code-block:: html+django
+    :emphasize-lines: 5-17
+    
+    {% block content %}
+        <h1>{{ page.title }}</h1>
+        <p class="meta">{{ page.date }}</p>
+    
+        {% with authors=page.authors.all %}
+            {% if authors %}
+                <h3>Posted in:</h3>
+                <ul>
+                    {% for author in authors %}
+                        <li style="display: inline">
+                            {% image author.author_image fill-80x120 style="vertical-align: middle" %}
+                            {{ author.name }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    
+        <div class="intro">{{ page.intro }}</div>
+    
+        {{ page.body|richtext }}
+    
+        {% for item in page.gallery_images.all %}
+            <div style="float: left; margin: 10px">
+                {% image item.image fill-320x240 %}
+                <p>{{ item.caption }}</p>
+            </div>
+        {% endfor %}
+    
+        <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
+    
+    {% endblock %}
 ```
 
-!["Second Post" page, with title, date, categories, intro, body, and a gallery of three images](../_static/images/tutorial/tutorial_10.png)
+Now go to your Admin interface, in the [Sidebar](https://guide.wagtail.org/en-latest/how-to-guides/find-your-way-around/#the-sidebar), you can see the new **Snippets** option. Click this to create your authors. After creating your authors, go to your blog posts and add authors to them.
+
+!["Second Post" page, with title, date, authors, intro, body, and a gallery of three images](../_static/images/tutorial/tutorial_10.png)
 
 ### Tag Posts
 
