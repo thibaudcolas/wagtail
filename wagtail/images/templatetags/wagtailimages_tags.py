@@ -3,16 +3,17 @@ from functools import lru_cache
 
 from django import template
 from django.core.exceptions import ImproperlyConfigured
+from django.template.base import FilterExpression
 from django.urls import NoReverseMatch
 
 from wagtail.images.models import Filter
-from wagtail.images.shortcuts import get_rendition_or_not_found 
-from wagtail.images.shortcuts import get_multiple_renditions_or_not_found
+from wagtail.images.shortcuts import get_rendition_or_not_found , get_renditions_or_not_found
 from wagtail.images.utils import to_svg_safe_spec
 from wagtail.images.views.serve import generate_image_url
 
 register = template.Library()
 allowed_filter_pattern = re.compile(r"^[A-Za-z0-9_\-\.]+$")
+allowed_multiple_filter_pattern = re.compile(r"^[A-Za-z0-9_\-\.{},]+$")
 
 
 @register.tag(name="image")
@@ -190,7 +191,7 @@ def image_srcset(parser, token):
                     value
                 )  # setup to resolve context variables as value
             except ValueError:
-                if allowed_filter_pattern.match(bit):
+                if allowed_multiple_filter_pattern.match(bit):
                     filter_specs.append(bit)
                 else:
                     raise template.TemplateSyntaxError(
@@ -232,6 +233,7 @@ def image_srcset(parser, token):
             "or {% image self.photo max-320x200 as img %}"
         )
 
+
 class ImageSrcsetNode(template.Node):
     def __init__(
         self,
@@ -254,13 +256,9 @@ class ImageSrcsetNode(template.Node):
         # Brace-expanded filters, to generate multiple renditions at once.
         braced_filters = []
 
-        named_filters = getattr(settings, 'WAGTAIL_PICTURE_PROPOSAL_NAMED_FILTERS', {})
-
         for spec in self.filter_specs:
+            print(spec)
             raw_filter = spec.resolve(context) if isinstance(spec, FilterExpression) else spec
-            # TODO If the filter matches one of the predefined named filters.
-            # Do we want those to be expanded as well?
-            raw_filter = named_filters.get(raw_filter, raw_filter)
             if "{" in raw_filter:
                 if len(braced_filters) > 0:
                     raise ValueError(f"{self.tag_name} tag supports at most one pattern with brace-expansion, got {braced_filters:r} and {raw_filter:r}")
@@ -299,6 +297,7 @@ class ImageSrcsetNode(template.Node):
         if not hasattr(image, 'get_rendition'):
             raise ValueError(f"{self.tag_name} tag expected an Image object, got {image!r}")
 
+        print(self.raw_filter_specs(context))
         filters = [Filter(spec=f) for f in self.raw_filter_specs(context)]
         renditions = get_renditions_or_not_found(image, filters)
 
@@ -310,45 +309,13 @@ class ImageSrcsetNode(template.Node):
             # render the rendition's image tag now
             resolved_attrs = {
                 'srcset': ",".join([f"{rendition.url} {rendition.width}w" for rendition in renditions])
+            }
             for key in self.attrs:
                 resolved_attrs[key] = self.attrs[key].resolve(context)
 
-            return render_to_string('img_srcset_wip.html', {
-                "fallback_renditions": renditions,
-                "attributes": resolved_attrs
-            })
+            return renditions[0].img_tag(resolved_attrs)
 
     def get_filter(self, preserve_svg=False):
         if preserve_svg:
             return Filter(to_svg_safe_spec(self.filter_specs))
         return Filter(spec="|".join(self.filter_specs))
-
-    def render(self, context):
-        try:
-            image = self.image_expr.resolve(context)
-        except template.VariableDoesNotExist:
-            return ""
-
-        if not image:
-            if self.output_var_name:
-                context[self.output_var_name] = None
-            return ""
-
-        if not hasattr(image, "get_rendition"):
-            raise ValueError("image tag expected an Image object, got %r" % image)
-
-        rendition = get_multiple_rendition_or_not_found(
-            image,
-            self.get_filter(preserve_svg=self.preserve_svg and image.is_svg()),
-        )
-
-        if self.output_var_name:
-            # return the rendition object in the given variable
-            context[self.output_var_name] = rendition
-            return ""
-        else:
-            # render the rendition's image tag now
-            resolved_attrs = {}
-            for key in self.attrs:
-                resolved_attrs[key] = self.attrs[key].resolve(context)
-            return rendition.img_tag(resolved_attrs)
