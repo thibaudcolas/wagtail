@@ -21,7 +21,11 @@ $padding: math.div($grid-gutter-width, 2);
 // Our column container
 @mixin column($x, $padding: $padding, $grid-columns: $grid-columns) {
   display: inline;
+  // Remove once we drop support for Chrome 117.
+  // stylelint-disable-next-line declaration-property-value-allowed-list
   float: left;
+  // stylelint-disable-next-line declaration-block-no-duplicate-properties
+  float: inline-start;
   width: 100% * math.div($x, $grid-columns);
   padding-inline-end: $padding;
   padding-inline-start: $padding;

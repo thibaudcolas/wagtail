@@ -22,12 +22,6 @@ module.exports = {
     ],
     // Would be valuable for strict BEM components but is too hard to enforce with legacy code.
     'no-descending-specificity': null,
-    // Override stylelint-config-wagtail’s options to allow all float and clear values for now.
-    'declaration-property-value-allowed-list': {
-      // 'clear': ['both', 'none'],
-      // 'float': ['inline-start', 'inline-end', 'none', 'unset'],
-      'text-align': ['start', 'end', 'center'],
-    },
     // Some parts of declaration-strict-value commented out until we are in a position to enforce them.
     'scale-unlimited/declaration-strict-value': [
       [

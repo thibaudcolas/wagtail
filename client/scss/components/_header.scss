@@ -57,12 +57,20 @@
   }
 
   .col {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
     margin-inline-end: 2em;
   }
 
   .left {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -72,7 +80,11 @@
     display: flex;
     gap: theme('spacing[2.5]');
     text-align: end;
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: right;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-end;
   }
 
   // For case where content below header should merge with it
@@ -132,12 +144,20 @@
     }
 
     .left {
+      // Remove once we drop support for Chrome 117.
+      // stylelint-disable-next-line declaration-property-value-allowed-list
       float: left;
+      // stylelint-disable-next-line declaration-block-no-duplicate-properties
+      float: inline-start;
       margin-inline-end: 0;
 
       &:first-child {
         padding-bottom: 0;
+        // Remove once we drop support for Chrome 117.
+        // stylelint-disable-next-line declaration-property-value-allowed-list
         float: left;
+        // stylelint-disable-next-line declaration-block-no-duplicate-properties
+        float: inline-start;
       }
     }
 
@@ -146,7 +166,11 @@
 
       .right,
       .left {
+        // Remove once we drop support for Chrome 117.
+        // stylelint-disable-next-line declaration-property-value-allowed-list
         float: right;
+        // stylelint-disable-next-line declaration-block-no-duplicate-properties
+        float: inline-end;
       }
     }
 

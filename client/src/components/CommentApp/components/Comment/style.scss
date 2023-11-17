@@ -82,7 +82,11 @@
     margin-top: 10px;
 
     button {
+      // Remove once we drop support for Chrome 117.
+      // stylelint-disable-next-line declaration-property-value-allowed-list
       float: right;
+      // stylelint-disable-next-line declaration-block-no-duplicate-properties
+      float: inline-end;
     }
 
     &::after {
@@ -104,7 +108,11 @@
 
     button {
       height: 26px;
+      // Remove once we drop support for Chrome 117.
+      // stylelint-disable-next-line declaration-property-value-allowed-list
       float: right;
+      // stylelint-disable-next-line declaration-block-no-duplicate-properties
+      float: inline-end;
       margin-inline-start: 5px;
       color: theme('colors.white.DEFAULT');
       background-color: theme('colors.critical.200');

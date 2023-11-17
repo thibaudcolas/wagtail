@@ -13,7 +13,11 @@
   }
 
   li {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
 
     .dropdown li,  // dropdown li
         &:last-child {
@@ -84,7 +88,11 @@
   }
 
   .meta {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: right;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-end;
     text-align: end;
     padding: 7px math.div($grid-gutter-width, 2);
     font-size: 0.85em;

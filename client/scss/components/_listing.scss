@@ -230,7 +230,11 @@ ul.listing {
   }
 
   .actions {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: right;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-end;
     font-size: 0.8rem;
     margin: 0;
 
@@ -239,7 +243,11 @@ ul.listing {
     }
 
     > li {
+      // Remove once we drop support for Chrome 117.
+      // stylelint-disable-next-line declaration-property-value-allowed-list
       float: left;
+      // stylelint-disable-next-line declaration-block-no-duplicate-properties
+      float: inline-start;
       padding: 0 0.5em 0 0;
       vertical-align: middle;
     }
@@ -276,7 +284,11 @@ ul.listing {
   }
 
   .moderate-actions form {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
     margin: 0 1em 1em 0;
   }
 
@@ -459,11 +471,19 @@ table.listing {
   }
 
   .prev {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
   }
 
   .next {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: right;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-end;
   }
 }
 
@@ -482,7 +502,11 @@ table.listing {
 }
 
 .filter-title {
+  // Remove once we drop support for Chrome 117.
+  // stylelint-disable-next-line declaration-property-value-allowed-list
   float: left;
+  // stylelint-disable-next-line declaration-block-no-duplicate-properties
+  float: inline-start;
   font-size: 0.95em;
   padding: 1em;
   margin: 0 1em 0 0;
@@ -496,7 +520,11 @@ table.listing {
 
   li {
     padding: 0.8em;
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
   }
 
   &__icon {
@@ -530,7 +558,11 @@ table.listing {
         border: 0;
 
         .bulk-action-checkbox {
+          // Remove once we drop support for Chrome 117.
+          // stylelint-disable-next-line declaration-property-value-allowed-list
           float: left;
+          // stylelint-disable-next-line declaration-block-no-duplicate-properties
+          float: inline-start;
           margin: -0.5em 0.5em 0.5em -0.75em;
         }
 

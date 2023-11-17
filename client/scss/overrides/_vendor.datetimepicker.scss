@@ -40,7 +40,11 @@
   }
 
   .xdsoft_datepicker {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
     margin-inline-start: 8px;
   }
 
@@ -89,7 +93,11 @@
   }
 
   .xdsoft_prev {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
 
     &:before {
       mask-image: url('#{$images-root}icons/arrow-left.svg');
@@ -97,7 +105,11 @@
   }
 
   .xdsoft_today_button {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
     margin-inline-start: 5px;
 
     &:before {
@@ -106,7 +118,11 @@
   }
 
   .xdsoft_next {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: right;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-end;
 
     &:before {
       mask-image: url('#{$images-root}icons/arrow-right.svg');
@@ -115,7 +131,11 @@
 
   .xdsoft_timepicker {
     min-width: 70px;
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
     text-align: center;
     margin-inline-start: 8px;
     margin-top: 0;
@@ -176,7 +196,11 @@
     line-height: 20px;
     font-weight: bold;
     background-color: theme('colors.surface-page');
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
     width: 182px;
     text-align: center;
     cursor: pointer;

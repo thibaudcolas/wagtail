@@ -19,7 +19,11 @@
   }
 
   &__actions > div {
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: right;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-end;
     display: block;
     margin-inline-end: theme('spacing.3');
   }

@@ -13,7 +13,11 @@
     height: 3em;
     line-height: 3em;
     text-align: start;
+    // Remove once we drop support for Chrome 117.
+    // stylelint-disable-next-line declaration-property-value-allowed-list
     float: left;
+    // stylelint-disable-next-line declaration-block-no-duplicate-properties
+    float: inline-start;
   }
 
   .action-secondary {
