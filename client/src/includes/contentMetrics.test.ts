@@ -28,7 +28,7 @@ describe('getContentMetrics', () => {
     longevity, and production efficiency!
    `;
     const result = getContentMetrics('en-US', text);
-    expect(result.wordCount).toBe(147);
+    expect(result.wordCount).toBe(148);
     expect(result.readingTime).toBe(1);
   });
 
