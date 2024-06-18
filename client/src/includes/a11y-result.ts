@@ -1,4 +1,5 @@
-import {
+import axe, {
+  AxePlugin,
   AxeResults,
   ElementContext,
   NodeResult,
@@ -142,3 +143,108 @@ export const renderA11yResults = (
     });
   }
 };
+
+/**
+ * Axe plugin registry for interaction between the page editor and the live preview.
+ * Compared to other aspects of Axe and other plugins,
+ * - The parent frame only triggers execution of the plugin’s logic in the one frame.
+ * - The preview frame only executes the plugin’s logic, it doesn’t go through its own frames.
+ * See https://github.com/dequelabs/axe-core/blob/master/doc/plugins.md.
+ */
+export const wagtailPreviewPlugin: AxePlugin = {
+  id: 'wagtailPreview',
+  run(id, action, options, callback) {
+    // TODO Remove console logging.
+    // eslint-disable-next-line no-console
+    console.log('wagtailPreview.run in frame', document);
+
+    // Outside the preview frame, we need to send the command to the preview iframe.
+    const preview = document.querySelector<HTMLIFrameElement>(
+      '[data-preview-iframe]',
+    );
+
+    if (preview) {
+      // @ts-expect-error Not declared in the official Axe Utils API.
+      axe.utils.sendCommandToFrame(
+        preview,
+        {
+          command: 'run-wagtailPreview',
+          parameter: id,
+          action: action,
+          options: options,
+        },
+        (results) => {
+          // Pass the results from the preview iframe to the callback.
+          callback(results);
+        },
+      );
+    } else {
+      // Inside the preview frame, only call the expected plugin instance method.
+      // eslint-disable-next-line no-underscore-dangle
+      const pluginInstance = this._registry[id];
+      pluginInstance[action].call(pluginInstance, options, callback);
+    }
+  },
+  commands: [
+    {
+      id: 'run-wagtailPreview',
+      callback(data, callback) {
+        return axe.plugins.wagtailPreview.run(
+          data.parameter,
+          data.action,
+          data.options,
+          callback,
+        );
+      },
+    },
+  ],
+};
+
+interface ContentMetricsOptions {
+  targetElement: string;
+}
+
+interface ContentMetrics {
+  lang: string;
+  wordCount: number;
+}
+
+export const contentMetricsPluginInstance = {
+  id: 'metrics',
+  collectMetrics(
+    options: ContentMetricsOptions,
+    done: (metrics: ContentMetrics) => void,
+  ) {
+    const main = document.querySelector<HTMLElement>(options.targetElement);
+    const text = main?.innerText || '';
+    const lang = document.documentElement.lang;
+    // TODO Use a separate function implemented with Intl.Segmenter.
+    const wordCount =
+      text
+        .trim()
+        .replace(/['";:,.?¿\-!¡]+/g, '')
+        .match(/\S+/g)?.length || 0;
+    done({
+      lang,
+      wordCount,
+    });
+  },
+};
+
+/**
+ * Calls the `collectMetrics` method in the `metrics` plugin instance of the `wagtailPreview` registry.
+ */
+export const getPreviewContentMetrics = (
+  options: ContentMetricsOptions,
+): Promise<ContentMetrics> =>
+  new Promise((resolve) => {
+    axe.plugins.wagtailPreview.run(
+      'metrics',
+      'collectMetrics',
+      options,
+      (metrics: ContentMetrics) => {
+        // The plugin returns a single metric object, from the preview iframe, so we can pass it on directly.
+        resolve(metrics);
+      },
+    );
+  });

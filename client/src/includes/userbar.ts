@@ -2,9 +2,17 @@ import axe from 'axe-core';
 
 import A11yDialog from 'a11y-dialog';
 import { Application } from '@hotwired/stimulus';
-import { getAxeConfiguration, renderA11yResults } from './a11y-result';
+import {
+  contentMetricsPluginInstance,
+  getAxeConfiguration,
+  renderA11yResults,
+  wagtailPreviewPlugin,
+} from './a11y-result';
 import { DialogController } from '../controllers/DialogController';
 import { TeleportController } from '../controllers/TeleportController';
+
+axe.registerPlugin(wagtailPreviewPlugin);
+axe.plugins.wagtailPreview.add(contentMetricsPluginInstance);
 
 /*
 This entrypoint is not bundled with any polyfills to keep it as light as possible

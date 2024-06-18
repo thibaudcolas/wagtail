@@ -39,7 +39,10 @@ export const getContentMetrics = (
   };
 };
 
-const renderContentMetrics = ({ wordCount, readingTime }: ContentMetrics) => {
+export const renderContentMetrics = ({
+  wordCount,
+  readingTime,
+}: ContentMetrics) => {
   const wordCountContainer = document.querySelector<HTMLElement>(
     '[data-content-word-count]',
   );
@@ -67,20 +70,4 @@ const renderContentMetrics = ({ wordCount, readingTime }: ContentMetrics) => {
   }
   wordCountContainer.textContent = wordCount.toString();
   readingTimeContainer.textContent = readingTime.toString();
-};
-
-export const runContentCheck = () => {
-  const iframe = document.querySelector<HTMLIFrameElement>(
-    '[data-preview-iframe]',
-  );
-  const iframeDocument =
-    iframe?.contentDocument || iframe?.contentWindow?.document;
-  const text = iframeDocument?.querySelector('main')?.innerText;
-  if (!iframe || !iframeDocument || !text) {
-    return;
-  }
-  const lang = iframeDocument.documentElement.lang || 'en-US';
-  const contentMetrics = getContentMetrics(lang, text);
-
-  renderContentMetrics(contentMetrics);
 };
