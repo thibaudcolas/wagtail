@@ -13,7 +13,7 @@
   &__area {
     height: 100%;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     justify-content: space-between;
     // Needed for the warning message when the data is not valid.
     overflow: hidden;
@@ -129,10 +129,13 @@
     margin-top: 0;
     padding-top: 0;
 
+    &:not(&--multiple) {
+      order: 3;
+    }
+
     // Show the border only if there's an error,
     // but always show it if there are multiple preview modes
-    .preview-panel--has-errors &:not(&--multiple),
-    &--multiple {
+    .preview-panel--has-errors &:not(&--multiple) {
       @apply w-border-border-furniture w-border-t;
       padding-top: 1rem;
       margin-top: 1rem;
@@ -173,15 +176,23 @@
   }
 
   &__modes {
-    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: theme('spacing.[2.5]');
+    margin-bottom: theme('spacing.4');
     background-color: theme('colors.surface-page');
 
+    .w-field {
+      flex: 1;
+    }
+
     .w-field__input {
-      padding-inline-end: 0;
+      margin-top: 0;
     }
   }
 
   &__mode-select {
     @apply w-outline-offset-inside;
+    width: 100%;
   }
 }

@@ -30,7 +30,19 @@
     {% endif %}
 
     <div class="preview-panel__area">
-        <div class="preview-panel__controls{% if has_multiple_modes %} preview-panel__controls--multiple{% endif %}">
+        {% if has_multiple_modes %}
+            <div class="preview-panel__controls preview-panel__controls--multiple">
+                {% rawformattedfield label_text=_("Preview mode") id_for_label="id_preview_mode" classname="preview-panel__modes" %}
+                    <select id="id_preview_mode" name="preview_mode" class="preview-panel__mode-select" data-preview-mode-select>
+                        {% for internal_name, display_name in object.preview_modes %}
+                            <option value="{{ internal_name }}"{% if internal_name == object.default_preview_mode %} selected{% endif %}>{{ display_name }}</option>
+                        {% endfor %}
+                    </select>
+                {% endrawformattedfield %}
+            </div>
+        {% endif %}
+
+        <div class="preview-panel__controls">
             <div id="preview-panel-error-banner" class="preview-panel__error-banner">
                 {% icon name='warning' classname='default' %}
                 <div>
@@ -42,15 +54,6 @@
                     </p>
                 </div>
             </div>
-            {% if has_multiple_modes %}
-                {% rawformattedfield label_text=_("Preview mode") id_for_label="id_preview_mode" classname="preview-panel__modes" %}
-                    <select id="id_preview_mode" name="preview_mode" class="preview-panel__mode-select" data-preview-mode-select>
-                        {% for internal_name, display_name in object.preview_modes %}
-                            <option value="{{ internal_name }}"{% if internal_name == object.default_preview_mode %} selected{% endif %}>{{ display_name }}</option>
-                        {% endfor %}
-                    </select>
-                {% endrawformattedfield %}
-            {% endif %}
         </div>
 
         <div class="preview-panel__wrapper">
