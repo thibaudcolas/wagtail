@@ -51,3 +51,40 @@ export const wagtailPreviewPlugin: AxePlugin = {
     },
   ],
 };
+
+interface AnnotationOptions {
+  targetElement: string;
+}
+
+export const annotationPluginInstance = {
+  id: 'annotation',
+  annotate(options: AnnotationOptions, done: (result: string) => void) {
+    const elt = document.querySelector<HTMLElement>(options.targetElement);
+    if (elt) {
+      // elt.classList.add('w-a11y-result__outline');
+      // elt.style.scrollMargin = '6.25rem';
+      // elt.scrollIntoView({ behavior: 'smooth' });
+      // elt.focus();
+      sessionStorage.setItem(
+        'wagtail:checker-annotation',
+        JSON.stringify({
+          id: 'test',
+          target: options.targetElement,
+        }),
+      );
+    }
+    done('it worked');
+  },
+};
+
+export const annotatePreview = (options: AnnotationOptions): Promise<string> =>
+  new Promise((resolve) => {
+    axe.plugins.wagtailPreview.run(
+      'annotation',
+      'annotate',
+      options,
+      (result: string) => {
+        resolve(result);
+      },
+    );
+  });

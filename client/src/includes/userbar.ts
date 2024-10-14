@@ -7,7 +7,10 @@ import {
   getA11yReport,
   renderA11yResults,
 } from './a11y-result';
-import { wagtailPreviewPlugin } from './previewPlugin';
+import {
+  wagtailPreviewPlugin,
+  annotationPluginInstance,
+} from './previewPlugin';
 import { contentMetricsPluginInstance } from './contentMetrics';
 import { DialogController } from '../controllers/DialogController';
 import { TeleportController } from '../controllers/TeleportController';
@@ -32,9 +35,7 @@ export class Userbar extends HTMLElement {
     const shadowRoot = this.attachShadow({
       mode: 'open',
     });
-    shadowRoot.appendChild(
-      (template.content.firstElementChild as HTMLElement).cloneNode(true),
-    );
+    shadowRoot.appendChild(template.content.cloneNode(true));
     // Removes the template from html after it's being used
     template.remove();
 
@@ -312,6 +313,7 @@ export class Userbar extends HTMLElement {
     // Collect content data from the live preview via Axe plugin for content metrics calculation
     axe.registerPlugin(wagtailPreviewPlugin);
     axe.plugins.wagtailPreview.add(contentMetricsPluginInstance);
+    axe.plugins.wagtailPreview.add(annotationPluginInstance);
 
     const accessibilityTrigger = this.shadowRoot?.getElementById(
       'accessibility-trigger',
@@ -407,25 +409,10 @@ export class Userbar extends HTMLElement {
 
       const styleA11yOutline = () => {
         const rect = inaccessibleElement.getBoundingClientRect();
-        currentA11yOutline.style.cssText = `
-        top: ${
-          rect.height < 5
-            ? `${rect.top + window.scrollY - 2.5}px`
-            : `${rect.top + window.scrollY}px`
-        };
-        left: ${
-          rect.width < 5
-            ? `${rect.left + window.scrollX - 2.5}px`
-            : `${rect.left + window.scrollX}px`
-        };
-        width: ${Math.max(rect.width, 5)}px;
-        height: ${Math.max(rect.height, 5)}px;
-        position: absolute;
-        z-index: 129;
-        outline: 1px solid #CD4444;
-        box-shadow: 0px 0px 12px 1px #FF0000;
-        pointer-events: none;
-        `;
+        currentA11yOutline.style.top = `${rect.top + window.scrollY - (rect.height < 5 ? 2.5 : 0)}px`;
+        currentA11yOutline.style.left = `${rect.left + window.scrollX - (rect.width < 5 ? 2.5 : 0)}px`;
+        currentA11yOutline.style.width = `${rect.width}px`;
+        currentA11yOutline.style.height = `${rect.height}px`;
       };
 
       styleA11yOutline();
@@ -442,6 +429,18 @@ export class Userbar extends HTMLElement {
         window.removeEventListener('resize', styleA11yOutline);
       });
     };
+
+    let checkerAnnotation: { id: string; target: string } | null = null;
+    try {
+      checkerAnnotation = JSON.parse(
+        sessionStorage.getItem('wagtail:checker-annotation') || '',
+      );
+    } catch {
+      // Don’t initialise if there’s no annotation.
+    }
+    if (checkerAnnotation) {
+      onClickSelector(checkerAnnotation?.target || '');
+    }
 
     const toggleAxeResults = () => {
       if (accessibilityResultsBox.getAttribute('aria-hidden') === 'true') {

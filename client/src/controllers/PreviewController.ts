@@ -7,7 +7,10 @@ import {
   getA11yReport,
   renderA11yResults,
 } from '../includes/a11y-result';
-import { wagtailPreviewPlugin } from '../includes/previewPlugin';
+import {
+  wagtailPreviewPlugin,
+  annotatePreview,
+} from '../includes/previewPlugin';
 import {
   getPreviewContentMetrics,
   renderContentMetrics,
@@ -744,7 +747,22 @@ export class PreviewController extends Controller<HTMLElement> {
 
     runContentChecks();
 
-    const onClickSelector = () => this.newTabTarget.click();
+    const onClickSelector = (selectorName: string) => {
+      const previewSidePanel = document.querySelector(
+        '[data-side-panel="preview"]',
+      );
+      if (!previewSidePanel) return;
+      previewSidePanel.dispatchEvent(new Event('open'));
+      previewSidePanel.addEventListener(
+        'show',
+        () => {
+          annotatePreview({
+            targetElement: selectorName,
+          });
+        },
+        { once: true },
+      );
+    };
     runAccessibilityChecks(onClickSelector);
 
     // Ready for another update
