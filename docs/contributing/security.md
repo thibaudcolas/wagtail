@@ -31,6 +31,12 @@ At any given time, the Wagtail team provides official security support for sever
     Wagtail 2.6, support will be provided for Wagtail 2.5 and Wagtail 2.4. Upon the release of Wagtail 2.6, Wagtail 2.4's security support will end.
 -   The latest long-term support release will receive security updates.
 
+"Security support" means that we only backport fixes for vulnerabilities or
+data-loss issues. Versions still receiving regular bug fixes are said to be
+under **active support**, which generally includes the most recent feature
+release and any current long-term support series. Older releases receive only
+security support.
+
 When new releases are issued for security reasons, the accompanying notice will include a list of affected versions.
 This list is comprised solely of supported versions of Wagtail: older versions may also be affected, but we do not investigate to determine that, and will not issue patches or new releases for those versions.
 
