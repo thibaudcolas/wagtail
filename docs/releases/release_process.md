@@ -268,6 +268,12 @@ interface bugs as described in [](supported_versions).
 
 The branch for the previous feature release `stable/A.B-1.x`, if it is non-LTS, will only include security and data loss fixes until the next feature release (`A.B+1`).
 
+Branches that continue to receive bug fixes as well as security updates are said
+to be in **active support**. This includes the current feature release branch
+(`stable/A.B.x`) and any supported long-term support branch. Once a branch moves
+to security support mode, only fixes for vulnerabilities or data loss will be
+backported to it.
+
 Bugs fixed on `main` must _also_ be fixed on other applicable branches; this
 means that commits need to cleanly separate bug fixes from feature additions.
 The developer who commits a fix to `main` will be responsible for also applying
