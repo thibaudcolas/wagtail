@@ -472,6 +472,24 @@ The basic setup above produces a *working* schema, but it isn't as rich as drf-s
 -   Per-page-type fields configured through `api_fields` aren't enumerated — every page endpoint reports the base `Page` schema.
 -   Wagtail-specific query parameters (`?fields`, `?type`, `?child_of`, `?search`, …) aren't documented.
 
+For a richer schema that addresses these limitations, install the optional extension shipped with Wagtail (see below).
+
+#### Richer schemas with `wagtail.api.v2.schema`
+
+Wagtail ships an optional drf-spectacular extension that fills in the gaps above. Enable it by adding the module to `INSTALLED_APPS`:
+
+```python
+INSTALLED_APPS = [
+    ...
+    "rest_framework",
+    "drf_spectacular",
+    "wagtail.api.v2.schema",
+    ...
+]
+```
+
+No further configuration is needed — the extension auto-registers with drf-spectacular and improves the output for any viewset that inherits from `wagtail.api.v2.views.BaseAPIViewSet`.
+
 ## Additional settings
 
 ### `WAGTAILAPI_BASE_URL`
