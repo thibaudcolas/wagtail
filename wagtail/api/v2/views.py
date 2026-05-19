@@ -119,7 +119,7 @@ class BaseAPIViewSet(GenericViewSet):
 
         # Generate redirect
         url = get_object_detail_url(
-            self.request.wagtailapi_router, request, self.model, obj.pk
+            self._get_router(), request, self.model, obj.pk
         )
 
         if url is None:
@@ -323,7 +323,11 @@ class BaseAPIViewSet(GenericViewSet):
 
                 # Get a serializer class for the related object
                 child_model = django_field.related_model
-                child_endpoint_class = router.get_model_endpoint(child_model)
+                # `router` is None when called from schema introspection.
+                # Fall back to BaseAPIViewSet so the schema can still be built.
+                child_endpoint_class = (
+                    router.get_model_endpoint(child_model) if router is not None else None
+                )
                 child_endpoint_class = (
                     child_endpoint_class[1] if child_endpoint_class else BaseAPIViewSet
                 )
@@ -357,19 +361,31 @@ class BaseAPIViewSet(GenericViewSet):
             base=cls.base_serializer_class,
         )
 
+    def _is_listing_action(self):
+        # Schema generators (drf-spectacular, drf-yasg, DRF's builtin) probe
+        # viewsets without going through WagtailAPIRouter.wrap_view, so they
+        # see the standard DRF action names ("list"/"retrieve") instead of
+        # Wagtail's "listing_view"/"detail_view". Treat "list" as a listing
+        # action so the schema generator gets the listing serializer rather
+        # than trying to call get_object() on a request with no pk.
+        return self.action in ("listing_view", "list")
+
     def get_serializer_class(self):
         request = self.request
 
-        # Get model
-        if self.action == "listing_view":
+        # Get model. During schema introspection (no pk kwarg present), fall
+        # back to the queryset model rather than calling get_object().
+        if self._is_listing_action() or "pk" not in self.kwargs:
             model = self.get_queryset().model
         else:
             model = type(self.get_object())
 
-        # Fields
-        if "fields" in request.GET:
+        # Fields. ``self.request`` may be None during schema introspection
+        # (drf-yasg in particular calls get_schema(request=None)).
+        request_get = getattr(request, "GET", None) if request is not None else None
+        if request_get and "fields" in request_get:
             try:
-                fields_config = parse_fields_parameter(request.GET["fields"])
+                fields_config = parse_fields_parameter(request_get["fields"])
             except ValueError as e:
                 raise BadRequestError("fields error: %s" % str(e)) from e
         else:
@@ -377,17 +393,20 @@ class BaseAPIViewSet(GenericViewSet):
             fields_config = []
 
         # Allow "detail_only" (eg parent) fields on detail view
-        if self.action == "listing_view":
-            show_details = False
-        else:
-            show_details = True
+        show_details = not self._is_listing_action()
 
         return self._get_serializer_class(
-            self.request.wagtailapi_router,
+            self._get_router(),
             model,
             fields_config,
             show_details=show_details,
         )
+
+    def _get_router(self):
+        # WagtailAPIRouter.wrap_view sets request.wagtailapi_router on every
+        # request that goes through the router. Schema generators bypass that
+        # wrapper, so the attribute is missing during introspection.
+        return getattr(self.request, "wagtailapi_router", None)
 
     def get_serializer_context(self):
         """
@@ -396,7 +415,7 @@ class BaseAPIViewSet(GenericViewSet):
         return {
             "request": self.request,
             "view": self,
-            "router": self.request.wagtailapi_router,
+            "router": self._get_router(),
         }
 
     def get_renderer_context(self):
@@ -493,8 +512,13 @@ class PagesAPIViewSet(BaseAPIViewSet):
     def get_detail_default_fields(cls, model):
         detail_default_fields = super().get_detail_default_fields(model)
 
-        # When i18n is disabled, remove "locale" from default fields
-        if not getattr(settings, "WAGTAIL_I18N_ENABLED", False):
+        # When i18n is disabled, remove "locale" from default fields. The
+        # field may already be absent if a subclass has customised
+        # ``meta_fields``, hence the ``in`` check.
+        if (
+            not getattr(settings, "WAGTAIL_I18N_ENABLED", False)
+            and "locale" in detail_default_fields
+        ):
             detail_default_fields.remove("locale")
 
         return detail_default_fields

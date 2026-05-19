@@ -37,8 +37,14 @@ class DetailUrlField(Field):
     """
 
     def get_attribute(self, instance):
+        router = self.context.get("router")
+        if router is None:
+            # No router available (e.g. during schema introspection). The
+            # field can't produce a URL, so omit it from the representation.
+            raise SkipField
+
         url = get_object_detail_url(
-            self.context["router"], self.context["request"], type(instance), instance.pk
+            router, self.context["request"], type(instance), instance.pk
         )
 
         if url:
