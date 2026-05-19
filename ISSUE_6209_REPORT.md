@@ -215,6 +215,34 @@ Total: ~870 lines added (~600 of which are tests, parameter declarations, and fi
 - Before: 320 tests, all passing.
 - After: 335 tests, all passing (8 from Phase 1, 7 from Phase 3).
 
+## QA considerations for the long run
+
+The schema we ship now becomes a contract with API consumers. A few QA practices are worth borrowing from projects that have lived with this for a while:
+
+### 1. Snapshot the generated schema in CI
+
+Commit a reference `schema.yml` and have CI regenerate it on every PR, failing on diff. This is the cheapest catch-all: any accidental schema change becomes visible in the PR description, because clients depend on it and changes should be deliberate. drf-spectacular itself uses snapshot tests in its own suite, as does FastAPI. The diff also doubles as informal release notes for API consumers.
+
+**Tradeoff:** noisy across drf-spectacular minor releases (component name tweaks, type narrowing). The mitigation is pinning drf-spectacular in test deps and bumping it deliberately. Updates are usually one-line refreshes.
+
+### 2. Contract-test with [schemathesis](https://schemathesis.readthedocs.io/)
+
+Point it at a running test site with the demosite fixture and let it fuzz requests derived from the schema, then assert the responses conform. This catches "schema says X, implementation returns Y" drift — which is the failure mode where a generated schema is most dangerous, because it looks fine but lies. Hasura, Stripe-clients, and a number of Django Ninja apps use this pattern. It plugs naturally into the existing `test_api_v2.py` smoke-test script.
+
+**Tradeoff:** real runtime cost (hundreds of HTTP calls per run). Typically run on a nightly job, not every PR.
+
+### 3. Lint the schema with [Spectral](https://stoplight.io/open-source/spectral)
+
+A small ruleset (operationId naming, parameter descriptions present, no untyped properties) catches regressions that don't crash but degrade the developer experience for API consumers. GitHub's and Stripe's published specs are gated on Spectral rules. Inexpensive to run on every PR.
+
+**Tradeoff:** rule curation has its own learning curve, and the "recommended" preset is fairly opinionated. Usually starts with a permissive set and tightens over time.
+
+### Recommended sequencing
+
+If picking one to start: **snapshot testing**. Single CI step, immediate signal, no extra services. Add **Spectral** next for cheap consumer-facing checks, and **schemathesis** last (as a nightly job) once we want guarantees about implementation-schema fidelity.
+
+Prototypes for all three options live under `qa/` (`qa/snapshot/`, `qa/schemathesis/`, `qa/spectral/`), each runnable standalone with its own README.
+
 ## Things I deliberately didn't do
 
 - **Per-page-type schema components.** A future extension could enumerate every `Page` subclass with `api_fields` and emit one component per type, so clients could see what `?type=blog.BlogEntryPage&fields=*` actually returns. That requires more design (it could explode the schema size on real sites) and is left as a follow-up.
