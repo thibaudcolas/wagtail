@@ -9,6 +9,7 @@ from wagtail.admin.views import home
 from wagtail.api.v2.router import WagtailAPIRouter
 from wagtail.api.v2.tests.test_pages import Test10411APIViewSet
 from wagtail.api.v2.views import PagesAPIViewSet
+from wagtail.api.v3.api import build_api as build_v3_api
 from wagtail.contrib.redirects.api import RedirectsAPIViewSet
 from wagtail.contrib.sitemaps import Sitemap
 from wagtail.contrib.sitemaps import views as sitemaps_views
@@ -27,6 +28,8 @@ api_router.register_endpoint("documents", DocumentsAPIViewSet)
 api_router.register_endpoint("redirects", RedirectsAPIViewSet)
 api_router.register_endpoint("issue_10411", Test10411APIViewSet)
 
+v3_api = build_v3_api()
+
 
 urlpatterns = [
     path("admin/", include(wagtailadmin_urls)),
@@ -34,6 +37,7 @@ urlpatterns = [
     path("testimages/", include(wagtailimages_test_urls)),
     path("images/", include(wagtailimages_urls)),
     path("api/main/", api_router.urls),
+    path("api/v3/", v3_api.urls),
     path("sitemap.xml", sitemaps_views.sitemap),
     path(
         "sitemap-index.xml",
