@@ -5,6 +5,11 @@
 The Wagtail API module exposes a public, read-only, JSON-formatted API which
 can be used by external clients (such as a mobile app) or the site's frontend.
 
+If you need to mutate content (publish/move/copy/lock/...) over HTTP, see
+[](api_v2_admin_actions) for the session-authenticated admin API.
+For an overview of authentication choices (session, token, OAuth) when
+exposing the API to external clients, see [](api_v2_authentication).
+
 This document is intended for developers using the API exposed by Wagtail. For
 documentation on how to enable the API module in your Wagtail site, see
 [Wagtail API v2 configuration guide](/advanced_topics/api/v2/configuration)

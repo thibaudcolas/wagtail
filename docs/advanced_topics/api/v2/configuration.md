@@ -353,6 +353,12 @@ The generated rendition URLs will be included in the API response, allowing clie
 
 ### Authentication
 
+```{note}
+For a broader overview of authentication options (session, token, JWT/Knox,
+OAuth2/OIDC) and when each is appropriate, see [](api_v2_authentication). The
+section below shows the minimum wiring for DRF's built-in token auth.
+```
+
 To protect the access to your API, you can implement an [authentication](https://www.django-rest-framework.org/api-guide/authentication/) method provided by the Django REST Framework, for example the [Token Authentication](https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication):
 
 ```python
