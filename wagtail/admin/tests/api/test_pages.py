@@ -2060,6 +2060,206 @@ class TestRevertToPageRevisionAction(AdminAPITestCase, TestCase):
         self.assertEqual(content, {"message": "No Revision matches the given query."})
 
 
+class TestLockPageAction(AdminAPITestCase, TestCase):
+    fixtures = ["test.json"]
+
+    def get_response(self, page_id):
+        return self.client.post(
+            reverse("wagtailadmin_api:pages:action", args=[page_id, "lock"])
+        )
+
+    def test_lock_page(self):
+        page = Page.objects.get(id=3)
+        self.assertFalse(page.locked)
+
+        response = self.get_response(page.id)
+        self.assertEqual(response.status_code, 200)
+
+        page.refresh_from_db()
+        self.assertTrue(page.locked)
+        self.assertEqual(page.locked_by, self.user)
+        self.assertIsNotNone(page.locked_at)
+
+    def test_lock_page_is_idempotent(self):
+        page = Page.objects.get(id=3)
+        self.get_response(page.id)
+        page.refresh_from_db()
+        first_lock_at = page.locked_at
+        original_locker = page.locked_by
+
+        # Second lock should not change the original locker/timestamp.
+        response = self.get_response(page.id)
+        self.assertEqual(response.status_code, 200)
+
+        page.refresh_from_db()
+        self.assertTrue(page.locked)
+        self.assertEqual(page.locked_at, first_lock_at)
+        self.assertEqual(page.locked_by, original_locker)
+
+    def test_lock_page_bad_permissions(self):
+        self.user.is_superuser = False
+        self.user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="wagtailadmin", codename="access_admin"
+            )
+        )
+        self.user.save()
+
+        response = self.get_response(3)
+        self.assertEqual(response.status_code, 403)
+
+        content = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(
+            content, {"detail": "You do not have permission to lock this page."}
+        )
+
+
+class TestUnlockPageAction(AdminAPITestCase, TestCase):
+    fixtures = ["test.json"]
+
+    def get_response(self, page_id):
+        return self.client.post(
+            reverse("wagtailadmin_api:pages:action", args=[page_id, "unlock"])
+        )
+
+    def test_unlock_page(self):
+        page = Page.objects.get(id=3)
+        page.locked = True
+        page.locked_by = self.user
+        page.locked_at = timezone.now()
+        page.save(update_fields=["locked", "locked_by", "locked_at"])
+
+        response = self.get_response(page.id)
+        self.assertEqual(response.status_code, 200)
+
+        page.refresh_from_db()
+        self.assertFalse(page.locked)
+        self.assertIsNone(page.locked_by)
+        self.assertIsNone(page.locked_at)
+
+    def test_unlock_page_is_idempotent(self):
+        page = Page.objects.get(id=3)
+        self.assertFalse(page.locked)
+
+        response = self.get_response(page.id)
+        self.assertEqual(response.status_code, 200)
+
+        page.refresh_from_db()
+        self.assertFalse(page.locked)
+
+    def test_unlock_page_bad_permissions(self):
+        # Lock the page as the superuser first.
+        page = Page.objects.get(id=3)
+        page.locked = True
+        # Lock it as a *different* user so the test user can't unlock via
+        # `user_has_lock`. Use the second user in the fixture (id != self.user).
+        other_user = get_user_model().objects.exclude(pk=self.user.pk).first()
+        page.locked_by = other_user
+        page.locked_at = timezone.now()
+        page.save(update_fields=["locked", "locked_by", "locked_at"])
+
+        self.user.is_superuser = False
+        self.user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="wagtailadmin", codename="access_admin"
+            )
+        )
+        self.user.save()
+
+        response = self.get_response(page.id)
+        self.assertEqual(response.status_code, 403)
+
+
+class TestPageActionDispatch(AdminAPITestCase, TestCase):
+    """Tests for the action_view dispatcher itself (not any specific action)."""
+
+    fixtures = ["test.json"]
+
+    def test_unknown_action_returns_404(self):
+        response = self.client.post(
+            reverse(
+                "wagtailadmin_api:pages:action",
+                args=[3, "this-action-does-not-exist"],
+            )
+        )
+        self.assertEqual(response.status_code, 404)
+        content = json.loads(response.content.decode("utf-8"))
+        self.assertIn("does-not-exist", content.get("message", ""))
+
+    def test_unknown_page_returns_404(self):
+        response = self.client.post(
+            reverse("wagtailadmin_api:pages:action", args=[999999, "publish"])
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_anonymous_request_is_rejected(self):
+        self.client.logout()
+        response = self.client.post(
+            reverse("wagtailadmin_api:pages:action", args=[3, "publish"])
+        )
+        # SessionAuthentication rejects anonymous unsafe requests at the auth
+        # layer; Wagtail's admin login decorator wraps the API URLs and
+        # redirects anonymous users to /admin/login/.
+        self.assertIn(response.status_code, (302, 403))
+
+    def test_get_method_is_not_allowed(self):
+        response = self.client.get(
+            reverse("wagtailadmin_api:pages:action", args=[3, "publish"])
+        )
+        self.assertEqual(response.status_code, 405)
+
+
+class TestRegisterPageAPIActionHook(AdminAPITestCase, TestCase):
+    """Tests for the register_page_api_action hook."""
+
+    fixtures = ["test.json"]
+
+    def test_hook_can_register_a_new_action(self):
+        from rest_framework import status as drf_status
+        from rest_framework.response import Response
+        from rest_framework.serializers import Serializer
+
+        from wagtail.admin.api.actions.base import APIAction
+
+        invocations = []
+
+        class CountInvocationsAPIAction(APIAction):
+            serializer = Serializer
+
+            def execute(self, instance, data):
+                invocations.append(instance.id)
+                return Response(
+                    {"page_id": instance.id, "invocations": len(invocations)},
+                    status=drf_status.HTTP_200_OK,
+                )
+
+        def register():
+            return ("count_invocations", CountInvocationsAPIAction)
+
+        with hooks.register_temporarily("register_page_api_action", register):
+            response = self.client.post(
+                reverse(
+                    "wagtailadmin_api:pages:action",
+                    args=[3, "count_invocations"],
+                )
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(invocations, [3])
+        content = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(content, {"page_id": 3, "invocations": 1})
+
+    def test_hook_action_is_not_registered_outside_context(self):
+        # Calling the same action outside the hook context must 404.
+        response = self.client.post(
+            reverse(
+                "wagtailadmin_api:pages:action",
+                args=[3, "count_invocations"],
+            )
+        )
+        self.assertEqual(response.status_code, 404)
+
+
 # Overwrite imported test cases do Django doesn't run them
 TestPageDetail = None
 TestPageListing = None

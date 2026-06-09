@@ -1,0 +1,1990 @@
+components:
+  schemas:
+    Page:
+      properties:
+        admin_display_title:
+          readOnly: true
+          type: string
+        alias_of:
+          nullable: true
+          properties:
+            id:
+              type: integer
+            meta:
+              properties:
+                detail_url:
+                  format: uri
+                  type: string
+                html_url:
+                  format: uri
+                  type: string
+                type:
+                  type: string
+              type: object
+            title:
+              type: string
+          readOnly: true
+          type: object
+        ancestors:
+          properties:
+            items:
+              items:
+                type: object
+              type: array
+          readOnly: true
+          type: object
+        children:
+          properties:
+            count:
+              type: integer
+            listing_url:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
+        descendants:
+          properties:
+            items:
+              items:
+                type: object
+              type: array
+          readOnly: true
+          type: object
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        first_published_at:
+          format: date-time
+          nullable: true
+          type: string
+        html_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        latest_revision_created_at:
+          format: date-time
+          nullable: true
+          readOnly: true
+          type: string
+        parent:
+          nullable: true
+          properties:
+            id:
+              type: integer
+            meta:
+              properties:
+                detail_url:
+                  format: uri
+                  type: string
+                html_url:
+                  format: uri
+                  type: string
+                type:
+                  type: string
+              type: object
+            title:
+              type: string
+          readOnly: true
+          type: object
+        search_description:
+          description: The descriptive text displayed underneath a headline in search
+            engine results.
+          title: Meta description
+          type: string
+        seo_title:
+          description: The name of the page displayed on search engine results as
+            the clickable headline.
+          maxLength: 255
+          title: Title tag
+          type: string
+        show_in_menus:
+          description: Whether a link to this page will appear in automatically generated
+            menus
+          type: boolean
+        slug:
+          description: The name of the page as it will appear in URLs e.g http://domain.com/blog/[my-slug]/
+          maxLength: 255
+          pattern: ^[-\w]+$
+          type: string
+        status:
+          properties:
+            has_unpublished_changes:
+              type: boolean
+            live:
+              type: boolean
+            status:
+              type: string
+          readOnly: true
+          type: object
+        title:
+          description: The page title as you'd like it to be seen by the public
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - admin_display_title
+      - alias_of
+      - ancestors
+      - children
+      - descendants
+      - detail_url
+      - html_url
+      - id
+      - latest_revision_created_at
+      - parent
+      - slug
+      - status
+      - title
+      - type
+      type: object
+    WagtailDocumentsDetail:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        download_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        tags:
+          items:
+            type: string
+          readOnly: true
+          type: array
+        title:
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - detail_url
+      - download_url
+      - id
+      - tags
+      - title
+      - type
+      type: object
+    WagtailDocumentsList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/WagtailDocumentsListItem'
+          type: array
+        meta:
+          $ref: '#/components/schemas/WagtailDocumentsListMeta'
+      required:
+      - items
+      - meta
+      type: object
+    WagtailDocumentsListItem:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        download_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        tags:
+          items:
+            type: string
+          readOnly: true
+          type: array
+        title:
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - detail_url
+      - download_url
+      - id
+      - tags
+      - title
+      - type
+      type: object
+    WagtailDocumentsListMeta:
+      properties:
+        total_count:
+          type: integer
+      required:
+      - total_count
+      type: object
+    WagtailDocumentsadminDetail:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        download_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        tags:
+          items:
+            type: string
+          readOnly: true
+          type: array
+        title:
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - detail_url
+      - download_url
+      - id
+      - tags
+      - title
+      - type
+      type: object
+    WagtailDocumentsadminList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/WagtailDocumentsadminListItem'
+          type: array
+        meta:
+          $ref: '#/components/schemas/WagtailDocumentsadminListMeta'
+      required:
+      - items
+      - meta
+      type: object
+    WagtailDocumentsadminListItem:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        download_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        tags:
+          items:
+            type: string
+          readOnly: true
+          type: array
+        title:
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - detail_url
+      - download_url
+      - id
+      - tags
+      - title
+      - type
+      type: object
+    WagtailDocumentsadminListMeta:
+      properties:
+        total_count:
+          type: integer
+      required:
+      - total_count
+      type: object
+    WagtailImagesDetail:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        download_url:
+          format: uri
+          readOnly: true
+          type: string
+        height:
+          readOnly: true
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        tags:
+          items:
+            type: string
+          readOnly: true
+          type: array
+        title:
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+        width:
+          readOnly: true
+          type: integer
+      required:
+      - detail_url
+      - download_url
+      - height
+      - id
+      - tags
+      - title
+      - type
+      - width
+      type: object
+    WagtailImagesList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/WagtailImagesListItem'
+          type: array
+        meta:
+          $ref: '#/components/schemas/WagtailImagesListMeta'
+      required:
+      - items
+      - meta
+      type: object
+    WagtailImagesListItem:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        download_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        tags:
+          items:
+            type: string
+          readOnly: true
+          type: array
+        title:
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - detail_url
+      - download_url
+      - id
+      - tags
+      - title
+      - type
+      type: object
+    WagtailImagesListMeta:
+      properties:
+        total_count:
+          type: integer
+      required:
+      - total_count
+      type: object
+    WagtailImagesadminDetail:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        download_url:
+          format: uri
+          readOnly: true
+          type: string
+        height:
+          readOnly: true
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        tags:
+          items:
+            type: string
+          readOnly: true
+          type: array
+        thumbnail:
+          properties:
+            alt:
+              type: string
+            full_url:
+              format: uri
+              type: string
+            height:
+              type: integer
+            url:
+              format: uri
+              type: string
+            width:
+              type: integer
+          readOnly: true
+          type: object
+        title:
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+        width:
+          readOnly: true
+          type: integer
+      required:
+      - detail_url
+      - download_url
+      - height
+      - id
+      - tags
+      - thumbnail
+      - title
+      - type
+      - width
+      type: object
+    WagtailImagesadminList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/WagtailImagesadminListItem'
+          type: array
+        meta:
+          $ref: '#/components/schemas/WagtailImagesadminListMeta'
+      required:
+      - items
+      - meta
+      type: object
+    WagtailImagesadminListItem:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        download_url:
+          format: uri
+          readOnly: true
+          type: string
+        height:
+          readOnly: true
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        tags:
+          items:
+            type: string
+          readOnly: true
+          type: array
+        thumbnail:
+          properties:
+            alt:
+              type: string
+            full_url:
+              format: uri
+              type: string
+            height:
+              type: integer
+            url:
+              format: uri
+              type: string
+            width:
+              type: integer
+          readOnly: true
+          type: object
+        title:
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+        width:
+          readOnly: true
+          type: integer
+      required:
+      - detail_url
+      - download_url
+      - height
+      - id
+      - tags
+      - thumbnail
+      - title
+      - type
+      - width
+      type: object
+    WagtailImagesadminListMeta:
+      properties:
+        total_count:
+          type: integer
+      required:
+      - total_count
+      type: object
+    WagtailPagesDetail:
+      properties:
+        alias_of:
+          nullable: true
+          properties:
+            id:
+              type: integer
+            meta:
+              properties:
+                detail_url:
+                  format: uri
+                  type: string
+                html_url:
+                  format: uri
+                  type: string
+                type:
+                  type: string
+              type: object
+            title:
+              type: string
+          readOnly: true
+          type: object
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        first_published_at:
+          format: date-time
+          nullable: true
+          type: string
+        html_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        parent:
+          nullable: true
+          properties:
+            id:
+              type: integer
+            meta:
+              properties:
+                detail_url:
+                  format: uri
+                  type: string
+                html_url:
+                  format: uri
+                  type: string
+                type:
+                  type: string
+              type: object
+            title:
+              type: string
+          readOnly: true
+          type: object
+        search_description:
+          description: The descriptive text displayed underneath a headline in search
+            engine results.
+          title: Meta description
+          type: string
+        seo_title:
+          description: The name of the page displayed on search engine results as
+            the clickable headline.
+          maxLength: 255
+          title: Title tag
+          type: string
+        show_in_menus:
+          description: Whether a link to this page will appear in automatically generated
+            menus
+          type: boolean
+        slug:
+          description: The name of the page as it will appear in URLs e.g http://domain.com/blog/[my-slug]/
+          maxLength: 255
+          pattern: ^[-\w]+$
+          type: string
+        title:
+          description: The page title as you'd like it to be seen by the public
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - alias_of
+      - detail_url
+      - html_url
+      - id
+      - parent
+      - slug
+      - title
+      - type
+      type: object
+    WagtailPagesList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/WagtailPagesListItem'
+          type: array
+        meta:
+          $ref: '#/components/schemas/WagtailPagesListMeta'
+      required:
+      - items
+      - meta
+      type: object
+    WagtailPagesListItem:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        first_published_at:
+          format: date-time
+          nullable: true
+          type: string
+        html_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        slug:
+          description: The name of the page as it will appear in URLs e.g http://domain.com/blog/[my-slug]/
+          maxLength: 255
+          pattern: ^[-\w]+$
+          type: string
+        title:
+          description: The page title as you'd like it to be seen by the public
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - detail_url
+      - html_url
+      - id
+      - slug
+      - title
+      - type
+      type: object
+    WagtailPagesListMeta:
+      properties:
+        total_count:
+          type: integer
+      required:
+      - total_count
+      type: object
+    WagtailPagesadminDetail:
+      properties:
+        admin_display_title:
+          readOnly: true
+          type: string
+        alias_of:
+          nullable: true
+          properties:
+            id:
+              type: integer
+            meta:
+              properties:
+                detail_url:
+                  format: uri
+                  type: string
+                html_url:
+                  format: uri
+                  type: string
+                type:
+                  type: string
+              type: object
+            title:
+              type: string
+          readOnly: true
+          type: object
+        ancestors:
+          properties:
+            items:
+              items:
+                type: object
+              type: array
+          readOnly: true
+          type: object
+        children:
+          properties:
+            count:
+              type: integer
+            listing_url:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
+        descendants:
+          properties:
+            items:
+              items:
+                type: object
+              type: array
+          readOnly: true
+          type: object
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        first_published_at:
+          format: date-time
+          nullable: true
+          type: string
+        html_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        latest_revision_created_at:
+          format: date-time
+          nullable: true
+          readOnly: true
+          type: string
+        parent:
+          nullable: true
+          properties:
+            id:
+              type: integer
+            meta:
+              properties:
+                detail_url:
+                  format: uri
+                  type: string
+                html_url:
+                  format: uri
+                  type: string
+                type:
+                  type: string
+              type: object
+            title:
+              type: string
+          readOnly: true
+          type: object
+        search_description:
+          description: The descriptive text displayed underneath a headline in search
+            engine results.
+          title: Meta description
+          type: string
+        seo_title:
+          description: The name of the page displayed on search engine results as
+            the clickable headline.
+          maxLength: 255
+          title: Title tag
+          type: string
+        show_in_menus:
+          description: Whether a link to this page will appear in automatically generated
+            menus
+          type: boolean
+        slug:
+          description: The name of the page as it will appear in URLs e.g http://domain.com/blog/[my-slug]/
+          maxLength: 255
+          pattern: ^[-\w]+$
+          type: string
+        status:
+          properties:
+            has_unpublished_changes:
+              type: boolean
+            live:
+              type: boolean
+            status:
+              type: string
+          readOnly: true
+          type: object
+        title:
+          description: The page title as you'd like it to be seen by the public
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - admin_display_title
+      - alias_of
+      - ancestors
+      - children
+      - descendants
+      - detail_url
+      - html_url
+      - id
+      - latest_revision_created_at
+      - parent
+      - slug
+      - status
+      - title
+      - type
+      type: object
+    WagtailPagesadminList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/WagtailPagesadminListItem'
+          type: array
+        meta:
+          $ref: '#/components/schemas/WagtailPagesadminListMeta'
+      required:
+      - items
+      - meta
+      type: object
+    WagtailPagesadminListItem:
+      properties:
+        admin_display_title:
+          readOnly: true
+          type: string
+        children:
+          properties:
+            count:
+              type: integer
+            listing_url:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        first_published_at:
+          format: date-time
+          nullable: true
+          type: string
+        html_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        latest_revision_created_at:
+          format: date-time
+          nullable: true
+          readOnly: true
+          type: string
+        slug:
+          description: The name of the page as it will appear in URLs e.g http://domain.com/blog/[my-slug]/
+          maxLength: 255
+          pattern: ^[-\w]+$
+          type: string
+        status:
+          properties:
+            has_unpublished_changes:
+              type: boolean
+            live:
+              type: boolean
+            status:
+              type: string
+          readOnly: true
+          type: object
+        title:
+          description: The page title as you'd like it to be seen by the public
+          maxLength: 255
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - admin_display_title
+      - children
+      - detail_url
+      - html_url
+      - id
+      - latest_revision_created_at
+      - slug
+      - status
+      - title
+      - type
+      type: object
+    WagtailPagesadminListMeta:
+      properties:
+        total_count:
+          type: integer
+      required:
+      - total_count
+      type: object
+    WagtailRedirectsDetail:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        location:
+          type: string
+        old_path:
+          maxLength: 255
+          title: Redirect from
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - detail_url
+      - id
+      - location
+      - old_path
+      - type
+      type: object
+    WagtailRedirectsList:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/WagtailRedirectsListItem'
+          type: array
+        meta:
+          $ref: '#/components/schemas/WagtailRedirectsListMeta'
+      required:
+      - items
+      - meta
+      type: object
+    WagtailRedirectsListItem:
+      properties:
+        detail_url:
+          format: uri
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        location:
+          type: string
+        old_path:
+          maxLength: 255
+          title: Redirect from
+          type: string
+        type:
+          readOnly: true
+          type: string
+      required:
+      - detail_url
+      - id
+      - location
+      - old_path
+      - type
+      type: object
+    WagtailRedirectsListMeta:
+      properties:
+        total_count:
+          type: integer
+      required:
+      - total_count
+      type: object
+    WagtailTest10411Detail:
+      properties:
+        id:
+          readOnly: true
+          type: integer
+        title:
+          description: The page title as you'd like it to be seen by the public
+          maxLength: 255
+          type: string
+      required:
+      - id
+      - title
+      type: object
+    WagtailTest10411List:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/WagtailTest10411ListItem'
+          type: array
+        meta:
+          $ref: '#/components/schemas/WagtailTest10411ListMeta'
+      required:
+      - items
+      - meta
+      type: object
+    WagtailTest10411ListItem:
+      properties:
+        id:
+          readOnly: true
+          type: integer
+        title:
+          description: The page title as you'd like it to be seen by the public
+          maxLength: 255
+          type: string
+      required:
+      - id
+      - title
+      type: object
+    WagtailTest10411ListMeta:
+      properties:
+        total_count:
+          type: integer
+      required:
+      - total_count
+      type: object
+  securitySchemes:
+    basicAuth:
+      scheme: basic
+      type: http
+    cookieAuth:
+      in: cookie
+      name: sessionid
+      type: apiKey
+info:
+  title: Wagtail API
+  version: v2
+openapi: 3.0.3
+paths:
+  /admin/api/main/documents/:
+    get:
+      operationId: documentsadmin_list
+      parameters:
+      - description: Comma-separated list of fields to include in the response. Prefix
+          with ``*`` to start from all available fields, ``_`` to start from none,
+          or ``-`` to remove a default field. See the API usage docs for the full
+          syntax.
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: Maximum number of results to return. Capped by the ``WAGTAILAPI_LIMIT_MAX``
+          setting (default 20).
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: Number of results to skip before returning the page of results.
+        in: query
+        name: offset
+        schema:
+          type: integer
+      - description: Field name to order by. Prefix with ``-`` for descending order,
+          or use ``random`` for a random ordering.
+        in: query
+        name: order
+        schema:
+          type: string
+      - description: Full-text search query. Disabled when ``WAGTAILAPI_SEARCH_ENABLED``
+          is False.
+        in: query
+        name: search
+        schema:
+          type: string
+      - description: Combine search terms with AND (default) or OR.
+        in: query
+        name: search_operator
+        schema:
+          enum:
+          - and
+          - or
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailDocumentsadminList'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Documentsadmin
+  /admin/api/main/documents/find/:
+    get:
+      operationId: documentsadmin_find
+      parameters:
+      - description: Look up an object by its primary key.
+        in: query
+        name: id
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: Redirects to the detail endpoint for the matched object.
+        '404':
+          description: No object matched the query.
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Documentsadmin
+  /admin/api/main/documents/{id}/:
+    get:
+      operationId: documentsadmin_retrieve
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailDocumentsadminDetail'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Documentsadmin
+  /admin/api/main/images/:
+    get:
+      operationId: imagesadmin_list
+      parameters:
+      - description: Comma-separated list of fields to include in the response. Prefix
+          with ``*`` to start from all available fields, ``_`` to start from none,
+          or ``-`` to remove a default field. See the API usage docs for the full
+          syntax.
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: Maximum number of results to return. Capped by the ``WAGTAILAPI_LIMIT_MAX``
+          setting (default 20).
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: Number of results to skip before returning the page of results.
+        in: query
+        name: offset
+        schema:
+          type: integer
+      - description: Field name to order by. Prefix with ``-`` for descending order,
+          or use ``random`` for a random ordering.
+        in: query
+        name: order
+        schema:
+          type: string
+      - description: Full-text search query. Disabled when ``WAGTAILAPI_SEARCH_ENABLED``
+          is False.
+        in: query
+        name: search
+        schema:
+          type: string
+      - description: Combine search terms with AND (default) or OR.
+        in: query
+        name: search_operator
+        schema:
+          enum:
+          - and
+          - or
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailImagesadminList'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Imagesadmin
+  /admin/api/main/images/find/:
+    get:
+      operationId: imagesadmin_find
+      parameters:
+      - description: Look up an object by its primary key.
+        in: query
+        name: id
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: Redirects to the detail endpoint for the matched object.
+        '404':
+          description: No object matched the query.
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Imagesadmin
+  /admin/api/main/images/{id}/:
+    get:
+      operationId: imagesadmin_retrieve
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailImagesadminDetail'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Imagesadmin
+  /admin/api/main/pages/:
+    get:
+      operationId: pagesadmin_list
+      parameters:
+      - description: Only return ancestors of the given page id.
+        in: query
+        name: ancestor_of
+        schema:
+          type: integer
+      - description: Only return direct children of the given page id.
+        in: query
+        name: child_of
+        schema:
+          type: integer
+      - description: Only return descendants of the given page id.
+        in: query
+        name: descendant_of
+        schema:
+          type: integer
+      - description: Comma-separated list of fields to include in the response. Prefix
+          with ``*`` to start from all available fields, ``_`` to start from none,
+          or ``-`` to remove a default field. See the API usage docs for the full
+          syntax.
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: Maximum number of results to return. Capped by the ``WAGTAILAPI_LIMIT_MAX``
+          setting (default 20).
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: Restrict results to a single locale, by language code.
+        in: query
+        name: locale
+        schema:
+          type: string
+      - description: Number of results to skip before returning the page of results.
+        in: query
+        name: offset
+        schema:
+          type: integer
+      - description: Field name to order by. Prefix with ``-`` for descending order,
+          or use ``random`` for a random ordering.
+        in: query
+        name: order
+        schema:
+          type: string
+      - description: Full-text search query. Disabled when ``WAGTAILAPI_SEARCH_ENABLED``
+          is False.
+        in: query
+        name: search
+        schema:
+          type: string
+      - description: Combine search terms with AND (default) or OR.
+        in: query
+        name: search_operator
+        schema:
+          enum:
+          - and
+          - or
+          type: string
+      - description: Restrict results to a single site, by hostname or ``hostname:port``.
+          Defaults to the site matching the current request.
+        in: query
+        name: site
+        schema:
+          type: string
+      - description: Only return translations of the given page id (requires WAGTAIL_I18N_ENABLED).
+        in: query
+        name: translation_of
+        schema:
+          type: integer
+      - description: Restrict results to one or more page types, given as ``app_label.ModelName``
+          (comma-separated for multiple). Required to filter on or return type-specific
+          fields.
+        in: query
+        name: type
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailPagesadminList'
+          description: ''
+      security:
+      - cookieAuth: []
+      - {}
+      tags:
+      - Pagesadmin
+  /admin/api/main/pages/find/:
+    get:
+      operationId: pagesadmin_find
+      parameters:
+      - description: Look up a page by its public URL path (eg. ``/blog/my-post/``).
+        in: query
+        name: html_path
+        schema:
+          type: string
+      - description: Look up an object by its primary key.
+        in: query
+        name: id
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: Redirects to the detail endpoint for the matched object.
+        '404':
+          description: No object matched the query.
+      security:
+      - cookieAuth: []
+      - {}
+      tags:
+      - Pagesadmin
+  /admin/api/main/pages/{id}/:
+    get:
+      operationId: pagesadmin_retrieve
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailPagesadminDetail'
+          description: ''
+      security:
+      - cookieAuth: []
+      - {}
+      tags:
+      - Pagesadmin
+  /admin/api/main/pages/{id}/action/{action_name}/:
+    post:
+      operationId: admin_api_main_pages_action_create
+      parameters:
+      - in: path
+        name: action_name
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Page'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Page'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Page'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+          description: ''
+      security:
+      - cookieAuth: []
+      - {}
+      tags:
+      - admin
+  /api/main/documents/:
+    get:
+      operationId: documents_list
+      parameters:
+      - description: Comma-separated list of fields to include in the response. Prefix
+          with ``*`` to start from all available fields, ``_`` to start from none,
+          or ``-`` to remove a default field. See the API usage docs for the full
+          syntax.
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: Maximum number of results to return. Capped by the ``WAGTAILAPI_LIMIT_MAX``
+          setting (default 20).
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: Number of results to skip before returning the page of results.
+        in: query
+        name: offset
+        schema:
+          type: integer
+      - description: Field name to order by. Prefix with ``-`` for descending order,
+          or use ``random`` for a random ordering.
+        in: query
+        name: order
+        schema:
+          type: string
+      - description: Full-text search query. Disabled when ``WAGTAILAPI_SEARCH_ENABLED``
+          is False.
+        in: query
+        name: search
+        schema:
+          type: string
+      - description: Combine search terms with AND (default) or OR.
+        in: query
+        name: search_operator
+        schema:
+          enum:
+          - and
+          - or
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailDocumentsList'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Documents
+  /api/main/documents/find/:
+    get:
+      operationId: documents_find
+      parameters:
+      - description: Look up an object by its primary key.
+        in: query
+        name: id
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: Redirects to the detail endpoint for the matched object.
+        '404':
+          description: No object matched the query.
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Documents
+  /api/main/documents/{id}/:
+    get:
+      operationId: documents_retrieve
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailDocumentsDetail'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Documents
+  /api/main/images/:
+    get:
+      operationId: images_list
+      parameters:
+      - description: Comma-separated list of fields to include in the response. Prefix
+          with ``*`` to start from all available fields, ``_`` to start from none,
+          or ``-`` to remove a default field. See the API usage docs for the full
+          syntax.
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: Maximum number of results to return. Capped by the ``WAGTAILAPI_LIMIT_MAX``
+          setting (default 20).
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: Number of results to skip before returning the page of results.
+        in: query
+        name: offset
+        schema:
+          type: integer
+      - description: Field name to order by. Prefix with ``-`` for descending order,
+          or use ``random`` for a random ordering.
+        in: query
+        name: order
+        schema:
+          type: string
+      - description: Full-text search query. Disabled when ``WAGTAILAPI_SEARCH_ENABLED``
+          is False.
+        in: query
+        name: search
+        schema:
+          type: string
+      - description: Combine search terms with AND (default) or OR.
+        in: query
+        name: search_operator
+        schema:
+          enum:
+          - and
+          - or
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailImagesList'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Images
+  /api/main/images/find/:
+    get:
+      operationId: images_find
+      parameters:
+      - description: Look up an object by its primary key.
+        in: query
+        name: id
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: Redirects to the detail endpoint for the matched object.
+        '404':
+          description: No object matched the query.
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Images
+  /api/main/images/{id}/:
+    get:
+      operationId: images_retrieve
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailImagesDetail'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Images
+  /api/main/issue_10411/:
+    get:
+      operationId: test10411_list
+      parameters:
+      - description: Only return ancestors of the given page id.
+        in: query
+        name: ancestor_of
+        schema:
+          type: integer
+      - description: Only return direct children of the given page id.
+        in: query
+        name: child_of
+        schema:
+          type: integer
+      - description: Only return descendants of the given page id.
+        in: query
+        name: descendant_of
+        schema:
+          type: integer
+      - description: Comma-separated list of fields to include in the response. Prefix
+          with ``*`` to start from all available fields, ``_`` to start from none,
+          or ``-`` to remove a default field. See the API usage docs for the full
+          syntax.
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: Maximum number of results to return. Capped by the ``WAGTAILAPI_LIMIT_MAX``
+          setting (default 20).
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: Restrict results to a single locale, by language code.
+        in: query
+        name: locale
+        schema:
+          type: string
+      - description: Number of results to skip before returning the page of results.
+        in: query
+        name: offset
+        schema:
+          type: integer
+      - description: Field name to order by. Prefix with ``-`` for descending order,
+          or use ``random`` for a random ordering.
+        in: query
+        name: order
+        schema:
+          type: string
+      - description: Full-text search query. Disabled when ``WAGTAILAPI_SEARCH_ENABLED``
+          is False.
+        in: query
+        name: search
+        schema:
+          type: string
+      - description: Combine search terms with AND (default) or OR.
+        in: query
+        name: search_operator
+        schema:
+          enum:
+          - and
+          - or
+          type: string
+      - description: Restrict results to a single site, by hostname or ``hostname:port``.
+          Defaults to the site matching the current request.
+        in: query
+        name: site
+        schema:
+          type: string
+      - description: Only return translations of the given page id (requires WAGTAIL_I18N_ENABLED).
+        in: query
+        name: translation_of
+        schema:
+          type: integer
+      - description: Restrict results to one or more page types, given as ``app_label.ModelName``
+          (comma-separated for multiple). Required to filter on or return type-specific
+          fields.
+        in: query
+        name: type
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailTest10411List'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Test10411
+  /api/main/issue_10411/find/:
+    get:
+      operationId: test10411_find
+      parameters:
+      - description: Look up a page by its public URL path (eg. ``/blog/my-post/``).
+        in: query
+        name: html_path
+        schema:
+          type: string
+      - description: Look up an object by its primary key.
+        in: query
+        name: id
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: Redirects to the detail endpoint for the matched object.
+        '404':
+          description: No object matched the query.
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Test10411
+  /api/main/issue_10411/{id}/:
+    get:
+      operationId: test10411_retrieve
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailTest10411Detail'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Test10411
+  /api/main/pages/:
+    get:
+      operationId: pages_list
+      parameters:
+      - description: Only return ancestors of the given page id.
+        in: query
+        name: ancestor_of
+        schema:
+          type: integer
+      - description: Only return direct children of the given page id.
+        in: query
+        name: child_of
+        schema:
+          type: integer
+      - description: Only return descendants of the given page id.
+        in: query
+        name: descendant_of
+        schema:
+          type: integer
+      - description: Comma-separated list of fields to include in the response. Prefix
+          with ``*`` to start from all available fields, ``_`` to start from none,
+          or ``-`` to remove a default field. See the API usage docs for the full
+          syntax.
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: Maximum number of results to return. Capped by the ``WAGTAILAPI_LIMIT_MAX``
+          setting (default 20).
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: Restrict results to a single locale, by language code.
+        in: query
+        name: locale
+        schema:
+          type: string
+      - description: Number of results to skip before returning the page of results.
+        in: query
+        name: offset
+        schema:
+          type: integer
+      - description: Field name to order by. Prefix with ``-`` for descending order,
+          or use ``random`` for a random ordering.
+        in: query
+        name: order
+        schema:
+          type: string
+      - description: Full-text search query. Disabled when ``WAGTAILAPI_SEARCH_ENABLED``
+          is False.
+        in: query
+        name: search
+        schema:
+          type: string
+      - description: Combine search terms with AND (default) or OR.
+        in: query
+        name: search_operator
+        schema:
+          enum:
+          - and
+          - or
+          type: string
+      - description: Restrict results to a single site, by hostname or ``hostname:port``.
+          Defaults to the site matching the current request.
+        in: query
+        name: site
+        schema:
+          type: string
+      - description: Only return translations of the given page id (requires WAGTAIL_I18N_ENABLED).
+        in: query
+        name: translation_of
+        schema:
+          type: integer
+      - description: Restrict results to one or more page types, given as ``app_label.ModelName``
+          (comma-separated for multiple). Required to filter on or return type-specific
+          fields.
+        in: query
+        name: type
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailPagesList'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Pages
+  /api/main/pages/find/:
+    get:
+      operationId: pages_find
+      parameters:
+      - description: Look up a page by its public URL path (eg. ``/blog/my-post/``).
+        in: query
+        name: html_path
+        schema:
+          type: string
+      - description: Look up an object by its primary key.
+        in: query
+        name: id
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: Redirects to the detail endpoint for the matched object.
+        '404':
+          description: No object matched the query.
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Pages
+  /api/main/pages/{id}/:
+    get:
+      operationId: pages_retrieve
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailPagesDetail'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Pages
+  /api/main/redirects/:
+    get:
+      operationId: redirects_list
+      parameters:
+      - description: Comma-separated list of fields to include in the response. Prefix
+          with ``*`` to start from all available fields, ``_`` to start from none,
+          or ``-`` to remove a default field. See the API usage docs for the full
+          syntax.
+        in: query
+        name: fields
+        schema:
+          type: string
+      - description: Maximum number of results to return. Capped by the ``WAGTAILAPI_LIMIT_MAX``
+          setting (default 20).
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: Number of results to skip before returning the page of results.
+        in: query
+        name: offset
+        schema:
+          type: integer
+      - description: Field name to order by. Prefix with ``-`` for descending order,
+          or use ``random`` for a random ordering.
+        in: query
+        name: order
+        schema:
+          type: string
+      - description: Full-text search query. Disabled when ``WAGTAILAPI_SEARCH_ENABLED``
+          is False.
+        in: query
+        name: search
+        schema:
+          type: string
+      - description: Combine search terms with AND (default) or OR.
+        in: query
+        name: search_operator
+        schema:
+          enum:
+          - and
+          - or
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailRedirectsList'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Redirects
+  /api/main/redirects/find/:
+    get:
+      operationId: redirects_find
+      parameters:
+      - description: Look up an object by its primary key.
+        in: query
+        name: id
+        schema:
+          type: integer
+      responses:
+        '302':
+          description: Redirects to the detail endpoint for the matched object.
+        '404':
+          description: No object matched the query.
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Redirects
+  /api/main/redirects/{id}/:
+    get:
+      operationId: redirects_retrieve
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WagtailRedirectsDetail'
+          description: ''
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      tags:
+      - Redirects

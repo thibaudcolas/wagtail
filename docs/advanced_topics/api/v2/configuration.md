@@ -353,6 +353,12 @@ The generated rendition URLs will be included in the API response, allowing clie
 
 ### Authentication
 
+```{note}
+For a broader overview of authentication options (session, token, JWT/Knox,
+OAuth2/OIDC) and when each is appropriate, see [](api_v2_authentication). The
+section below shows the minimum wiring for DRF's built-in token auth.
+```
+
 To protect the access to your API, you can implement an [authentication](https://www.django-rest-framework.org/api-guide/authentication/) method provided by the Django REST Framework, for example the [Token Authentication](https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication):
 
 ```python
@@ -398,6 +404,97 @@ Your API endpoint will be accessible only with the Authorization header containi
 Tokens can be generated in the Django admin under Auth Token or using the `manage.py` command `drf_create_token`.
 
 Note: If you use `TokenAuthentication` in production you must ensure that your API is only available over `https`.
+
+(api_v2_openapi_schema)=
+
+### OpenAPI schema generation
+
+Wagtail's API viewsets cooperate with [drf-spectacular](https://drf-spectacular.readthedocs.io/) so you can publish an OpenAPI 3 schema (and a Swagger UI / Redoc front-end) for your API.
+
+#### Basic setup
+
+Install drf-spectacular:
+
+```sh
+pip install drf-spectacular
+```
+
+Add it to `INSTALLED_APPS` and point Django REST framework at its `AutoSchema`:
+
+```python
+# settings.py
+
+INSTALLED_APPS = [
+    ...
+    "rest_framework",
+    "drf_spectacular",
+    ...
+]
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "My Wagtail site",
+    "VERSION": "1.0.0",
+}
+```
+
+Then hook up the schema and Swagger UI views:
+
+```python
+# urls.py
+
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+urlpatterns = [
+    ...
+    path("api/v2/", api_router.urls),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    ...
+]
+```
+
+You can now generate the schema from the command line:
+
+```sh
+python manage.py spectacular --file schema.yml
+```
+
+Or browse it at `/api/schema/swagger-ui/`.
+
+#### Limitations of the basic setup
+
+The basic setup above produces a *working* schema, but it isn't as rich as drf-spectacular's output for vanilla DRF views. Out of the box, drf-spectacular doesn't know about Wagtail-specific concepts, so:
+
+-   Listing and detail endpoints share a single response component (the listing's `{meta, items}` envelope is not reflected, and listings appear to return a single object).
+-   Listing operations are named `*_retrieve` rather than `*_list`, and clash with the detail operation IDs (drf-spectacular resolves the clash by appending `_2`).
+-   Per-page-type fields configured through `api_fields` aren't enumerated — every page endpoint reports the base `Page` schema.
+-   Wagtail-specific query parameters (`?fields`, `?type`, `?child_of`, `?search`, …) aren't documented.
+
+For a richer schema that addresses these limitations, install the optional extension shipped with Wagtail (see below).
+
+#### Richer schemas with `wagtail.api.v2.schema`
+
+Wagtail ships an optional drf-spectacular extension that fills in the gaps above. Enable it by adding the module to `INSTALLED_APPS`:
+
+```python
+INSTALLED_APPS = [
+    ...
+    "rest_framework",
+    "drf_spectacular",
+    "wagtail.api.v2.schema",
+    ...
+]
+```
+
+No further configuration is needed — the extension auto-registers with drf-spectacular and improves the output for any viewset that inherits from `wagtail.api.v2.views.BaseAPIViewSet`.
 
 ## Additional settings
 

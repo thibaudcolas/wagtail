@@ -18,5 +18,7 @@ maxdepth: 2
 ---
 v2/configuration
 v2/usage
+v2/admin_actions
+v2/authentication
 django-ninja
 ```

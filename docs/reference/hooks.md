@@ -830,6 +830,25 @@ The list of pages and the action are passed in as arguments to the hook.
 The function should return a dictionary with the page from the pages list as key, and a list of additional pages to perform the action on.
 We recommend they are non-aliased, direct translations of the pages from the function argument.
 
+(register_page_api_action)=
+
+### `register_page_api_action`
+
+Add a custom write action to the admin pages API. The callable should return a `(name, action_class)` tuple where `action_class` is a subclass of `wagtail.admin.api.actions.base.APIAction`. The action becomes available at `POST /admin/api/main/pages/<id>/action/<name>/`.
+
+```python
+from wagtail import hooks
+
+from myapp.api_actions import ArchivePageAPIAction
+
+
+@hooks.register("register_page_api_action")
+def register_archive_action():
+    return ("archive", ArchivePageAPIAction)
+```
+
+See [](api_v2_register_page_api_action) for the full action class contract, conventions for error handling, and a worked example.
+
 (register_page_action_menu_item)=
 
 ### `register_page_action_menu_item`

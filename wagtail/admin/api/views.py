@@ -6,6 +6,7 @@ from django.urls import path
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 
+from wagtail import hooks
 from wagtail.api.v2.utils import parse_boolean
 from wagtail.api.v2.views import PagesAPIViewSet
 from wagtail.models import Page
@@ -15,6 +16,7 @@ from .actions.copy import CopyPageAPIAction
 from .actions.copy_for_translation import CopyForTranslationAPIAction
 from .actions.create_alias import CreatePageAliasAPIAction
 from .actions.delete import DeletePageAPIAction
+from .actions.lock import LockPageAPIAction, UnlockPageAPIAction
 from .actions.move import MovePageAPIAction
 from .actions.publish import PublishPageAPIAction
 from .actions.revert_to_page_revision import RevertToPageRevisionAPIAction
@@ -37,7 +39,22 @@ class PagesAdminAPIViewSet(PagesAPIViewSet):
         "copy_for_translation": CopyForTranslationAPIAction,
         "create_alias": CreatePageAliasAPIAction,
         "revert_to_page_revision": RevertToPageRevisionAPIAction,
+        "lock": LockPageAPIAction,
+        "unlock": UnlockPageAPIAction,
     }
+
+    def get_actions(self):
+        """
+        Returns the dict of action_name -> APIAction subclass available to this
+        view. Built-in actions come from ``cls.actions``; third-party packages
+        may extend the list via the ``register_page_api_action`` hook by
+        returning ``(name, ActionClass)`` tuples.
+        """
+        actions = dict(self.actions)
+        for fn in hooks.get_hooks("register_page_api_action"):
+            name, action_class = fn()
+            actions[name] = action_class
+        return actions
 
     # Add has_children and for_explorer filters
     filter_backends = PagesAPIViewSet.filter_backends + [
@@ -134,10 +151,11 @@ class PagesAdminAPIViewSet(PagesAPIViewSet):
     def action_view(self, request, pk, action_name):
         instance = self.get_object()
 
-        if action_name not in self.actions:
+        actions = self.get_actions()
+        if action_name not in actions:
             raise Http404(f"unrecognised action '{action_name}'")
 
-        action = self.actions[action_name](self, request)
+        action = actions[action_name](self, request)
         action_data = action.serializer(data=request.data)
 
         if not action_data.is_valid():
