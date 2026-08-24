@@ -1,8 +1,10 @@
 import re
 from unittest.mock import patch
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import SimpleTestCase, TestCase
+from django.contrib.sessions.backends.signed_cookies import SessionStore
+from django.test import SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from freezegun import freeze_time
@@ -85,6 +87,56 @@ class TestAPITokenAdmin(TestCase):
         # The full secret is never shown anywhere else.
         self.assertNotContains(self.get("index"), plaintext)
         self.assertContains(self.get("index"), token.prefix)
+
+    def test_created_secret_expires_after_ttl(self):
+        self.client.force_login(self.root)
+        # Create a token, but never visit the one-time secret page.
+        with freeze_time("2020-01-01T12:00:00Z"):
+            response = self.client.post(
+                reverse("wagtailusers_api_tokens:add"),
+                {"user": self.root.pk, "name": "deploy bot"},
+            )
+            token = APIToken.objects.get()
+        created_url = response["Location"]
+        self.assertEqual(
+            created_url,
+            reverse("wagtailusers_api_tokens:created", args=[token.pk]),
+        )
+        # Long after creation, the one-time secret must no longer be served;
+        # the request is redirected to the index because the stash has expired.
+        with freeze_time("2020-01-01T13:00:00Z"):
+            stale_redirect = self.client.get(created_url)
+        self.assertEqual(stale_redirect.status_code, 302)
+        self.assertEqual(
+            stale_redirect["Location"],
+            reverse("wagtailusers_api_tokens:index"),
+        )
+        # Following the redirect shows the standard "displayed once" warning.
+        with freeze_time("2020-01-01T13:00:01Z"):
+            stale = self.client.get(created_url, follow=True)
+        self.assertContains(
+            stale,
+            "Token secrets are only displayed once, immediately after creation.",
+        )
+
+    @override_settings(SESSION_ENGINE="django.contrib.sessions.backends.signed_cookies")
+    def test_displayed_secret_removed_from_signed_cookie(self):
+        # With a signed-cookies session backend the session payload (token
+        # included) lives in the browser cookie, signed but not encrypted.
+        self.client.force_login(self.root)
+        response = self.client.post(
+            reverse("wagtailusers_api_tokens:add"),
+            {"user": self.root.pk, "name": "deploy bot"},
+        )
+        created = self.client.get(response["Location"])
+        self.assertEqual(created.status_code, 200)
+        plaintext = TOKEN_RE.findall(created.content.decode())[0]
+        # After the one-time display, the secret must not remain in the cookie.
+        cookie = self.client.cookies[settings.SESSION_COOKIE_NAME].value
+        store = SessionStore()
+        store._session_key = cookie
+        session_dict = store.load()
+        self.assertNotIn(plaintext, str(session_dict))
 
     def test_create_logs_action(self):
         self.client.force_login(self.root)

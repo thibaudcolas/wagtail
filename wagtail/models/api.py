@@ -36,7 +36,9 @@ def _token_checksum(secret):
 class APIToken(models.Model):
     """
     A bearer token authenticating API requests as a specific user. Only a
-    digest of the token is stored; the plaintext is shown once at creation.
+    digest of the token is stored in the database; the plaintext is held
+    transiently in the creator's session for a short window to support the
+    one-time display, then discarded.
     """
 
     user = models.ForeignKey(
@@ -109,7 +111,8 @@ class APIToken(models.Model):
     @classmethod
     def create_token(cls, *, user, name):
         """Create a token, returning ``(instance, plaintext)``. The plaintext
-        is only available from this return value — never stored or logged."""
+        is only available from this return value — never stored or logged. It
+        may be held transiently in the creator's session for one-time display."""
         plaintext = cls.generate_token()
         instance = cls(
             user=user,

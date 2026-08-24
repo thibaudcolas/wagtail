@@ -40,7 +40,8 @@ Use `--json` for structured output. `./manage.py api_tokens list` shows tokens (
 
 ## Token security model
 
-- Only an HMAC-SHA-256 **digest** of each token is stored, bound to your `SECRET_KEY`. The plaintext exists only at creation time.
+- Only an HMAC-SHA-256 **digest** of each token is stored in the database, bound to your `SECRET_KEY`. The plaintext itself is never stored in the database.
+- The plaintext is shown once in the admin immediately after creation. To support that one-time display it is held **transiently** in the creator's admin session for a short window (a few minutes) and then discarded.
 - Token strings carry a `wagtail_` prefix and a checksum, so clients and secret scanners can recognize them.
 - **Rotating `SECRET_KEY`:** tokens created under a key listed in [`SECRET_KEY_FALLBACKS`](https://docs.djangoproject.com/en/stable/ref/settings/#secret-key-fallbacks) keep working until the fallback is removed. This is the same rotation mechanism as session authentication. Rotating `SECRET_KEY` without fallbacks revokes all tokens at once.
 

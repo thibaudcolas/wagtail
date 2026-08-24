@@ -1,9 +1,12 @@
+from datetime import timedelta
+
 import django_filters
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.forms import CharField, CheckboxSelectMultiple, Form, ModelChoiceField
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import path, reverse
+from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
@@ -27,6 +30,24 @@ from wagtail.models import APIToken
 from wagtail.users.utils import get_manageable_token_owners, user_can_manage_token
 
 CREATED_SESSION_KEY = "wagtail_apitoken_created"
+# One-time token secrets need only survive the immediate POST/redirect/GET
+# round-trip; anything older is stale and must never be served, and should be
+# pruned so it does not linger in the session (and, under a signed-cookies
+# session backend, in the browser cookie).
+CREATED_SECRET_TTL = timedelta(seconds=60)
+
+
+def _prune_stash(stash):
+    """Drop one-time secrets older than ``CREATED_SECRET_TTL``.
+
+    Returns ``(pruned_stash, changed)`` where ``changed`` is True when any
+    stale entry was removed, so the caller can persist the smaller session.
+    """
+    if not stash:
+        return stash, False
+    cutoff = timezone.now().timestamp() - CREATED_SECRET_TTL.total_seconds()
+    fresh = {pk: entry for pk, entry in stash.items() if entry["created_at"] > cutoff}
+    return fresh, len(fresh) != len(stash)
 
 
 class APITokenForm(Form):
@@ -137,9 +158,14 @@ class CreateView(generic.CreateView):
         # Stash the secret in the session for a single display on the
         # redirected-to page (POST/redirect/GET, so a refresh cannot
         # re-submit and mint a duplicate token). Keyed by pk so multiple
-        # pending secrets can coexist.
+        # pending secrets can coexist, and timestamped so stale entries are
+        # pruned rather than lingering for the life of the session.
         stash = self.request.session.get(CREATED_SESSION_KEY, {})
-        stash[str(self.object.pk)] = plaintext
+        stash, _ = _prune_stash(stash)
+        stash[str(self.object.pk)] = {
+            "token": plaintext,
+            "created_at": timezone.now().timestamp(),
+        }
         self.request.session[CREATED_SESSION_KEY] = stash
         return redirect(self.get_success_url())
 
@@ -168,9 +194,17 @@ class CreatedView(WagtailAdminTemplateMixin, View):
 
     def get(self, request, pk):
         # Peek before consuming: a stale link or prefetch must not wipe the
-        # one-time secret.
+        # one-time secret. Prune expired entries first so a secret older than
+        # the TTL is treated as already-consumed rather than served.
         stash = request.session.get(CREATED_SESSION_KEY, {})
-        plaintext = stash.get(str(pk))
+        stash, changed = _prune_stash(stash)
+        if changed:
+            if stash:
+                request.session[CREATED_SESSION_KEY] = stash
+            else:
+                del request.session[CREATED_SESSION_KEY]
+        entry = stash.get(str(pk))
+        plaintext = entry["token"] if entry else None
         if plaintext is None:
             messages.warning(
                 request,
