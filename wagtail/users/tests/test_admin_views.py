@@ -2675,6 +2675,47 @@ class TestGroupEditView(AdminTemplateTestUtils, WagtailTestUtils, TestCase):
             panel.find("table").find("tbody").attrs["data-w-formset-target"],
         )
 
+    def test_permission_formset_row_headers(self):
+        # https://github.com/wagtail/wagtail/issues/12288 - rows of the page
+        # permissions table should start with a row header identifying the page
+        # the permissions apply to, and the checkboxes' accessible labels should
+        # name the permission type rather than "app | model | permission".
+        response = self.get()
+        soup = self.get_soup(response.content)
+
+        panel = soup.find(id="page-permissions-section")
+        row = panel.find("tr", id="inline_child_page_permissions-0")
+
+        row_header = row.find("th", attrs={"scope": "row"})
+        self.assertIsNotNone(row_header)
+        self.assertEqual(
+            "Root",
+            row_header.find(attrs={"data-chooser-title": True}).text.strip(),
+        )
+
+        lock_checkbox = row.find(
+            "input",
+            attrs={"name": "page_permissions-0-permissions", "value": "lock_page"},
+        )
+        labels = soup.find_all("label", attrs={"for": lock_checkbox["id"]})
+        label_text = " ".join(label.text.strip() for label in labels)
+        self.assertEqual("Lock/unlock pages you've locked", label_text)
+
+        # Collection-based permission formsets share the same markup
+        panel = soup.find(id="document-permissions-section")
+        row = panel.find("tr", id="inline_child_document_permissions-0")
+
+        row_header = row.find("th", attrs={"scope": "row"})
+        self.assertIsNotNone(row_header)
+        collection_select = row_header.find(
+            "select", attrs={"name": "document_permissions-0-collection"}
+        )
+        self.assertIsNotNone(collection_select)
+        self.assertEqual(
+            "Evil plans",
+            collection_select.find("option", selected=True).text.strip(),
+        )
+
 
 class TestGroupHistoryView(WagtailTestUtils, TestCase):
     # More thorough tests are in test_model_viewset
